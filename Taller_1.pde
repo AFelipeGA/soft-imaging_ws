@@ -2,11 +2,13 @@ import g4p_controls.*;
 import processing.video.*;
 
 PGraphics base, modified; // PGraphics
-PImage img; // Images
+PImage img, catImg, baboonImg, lenaImg; // Images
 Movie video; // Video
 
-GButton imageButton, videoButton; // Buttons
-GCheckbox grayscaleCheck, histogramCheck, segmentationCheck, frameRateCheck, edgeDetectionCheck, sharpenCheck, boxBlurCheck, gaussianBlurCheck; 
+GButton catButton, baboonButton, lenaButton, videoButton; // Buttons
+GCheckbox greyHistogramCheck, redHistogramCheck, greenHistogramCheck, blueHistogramCheck, segmentationCheck; // Histogram buttons
+GCheckbox meanCheck, ccirCheck, btCheck, smpteCheck; // Grayscale Buttons
+GCheckbox edgeDetectionCheck, sharpenCheck, boxBlurCheck, gaussianBlurCheck; // Masks Buttons
 
 int contentType = 1; // 1=Image, 2=Video
 int modifierType = 1; // 1=GrayScale, 
@@ -29,32 +31,46 @@ float[][] gaussianBlurMatrix =   { { 1.0/16, 1.0/8, 1.0/16 } ,
                                    { 1.0/16, 1.0/8, 1.0/16 } } ;
 
 void setup() {
-  size(1152, 648);
+  size(1152, 550);
   base = createGraphics(512, 300);
   modified = createGraphics(512, 300);
   
-  img = loadImage("cat.jpg");
+  catImg = loadImage("cat.jpg");
+  baboonImg = loadImage("baboon.png");
+  lenaImg = loadImage("lena.png");
+  
+  img = catImg;
   video = new Movie(this, "cat.mp4");
   video.loop();
   
   // Content Type Buttons
-  imageButton = new GButton(this, 25, 400, 100, 30, "Image");
-  imageButton.addEventHandler(this, "handleImageButton");
-  videoButton = new GButton(this, 25, 450, 100, 30, "Video");
+  catButton = new GButton(this, 25, 425, 100, 30, "Cat");
+  catButton.addEventHandler(this, "handleCatButton");
+  baboonButton = new GButton(this, 150, 425, 100, 30, "Baboon");
+  baboonButton.addEventHandler(this, "handleBaboonButton");
+  lenaButton = new GButton(this, 275, 425, 100, 30, "Lena");
+  lenaButton.addEventHandler(this, "handleLenaButton");
+  videoButton = new GButton(this, 25, 475, 100, 30, "Video");
   videoButton.addEventHandler(this, "handleVideoButton");
   
-  // Modifier Type Buttons
-  grayscaleCheck = new GCheckbox(this, 612, 400, 100, 25, "Grayscale");
-  histogramCheck = new GCheckbox(this, 612, 425, 100, 25, "Histogram");
-  segmentationCheck = new GCheckbox(this, 612, 450, 100, 25, "Segmentation");
-  frameRateCheck = new GCheckbox(this, 612, 425, 100, 25, "Frame Rate");
-  frameRateCheck.setVisible(false);
+  // Grayscale Method Buttons
+  meanCheck = new GCheckbox(this, 612, 400, 125, 25, "Mean");
+  ccirCheck = new GCheckbox(this, 612, 425, 125, 25, "CCIR 601");
+  btCheck = new GCheckbox(this, 612, 450, 125, 25, "BT. 709");
+  smpteCheck = new GCheckbox(this, 612, 475, 125, 25, "SMPTE 240M");
   
   // Convolution Buttons
-  edgeDetectionCheck = new GCheckbox(this, 800, 400, 200, 25, "Edge Detection");
-  sharpenCheck = new GCheckbox(this, 800, 425, 200, 25, "Sharpen");
-  boxBlurCheck = new GCheckbox(this, 800, 450, 200, 25, "Box Blur");
-  gaussianBlurCheck = new GCheckbox(this, 800, 475, 200, 25, "Gaussian Blur");
+  edgeDetectionCheck = new GCheckbox(this, 775, 400, 125, 25, "Edge Detection");
+  sharpenCheck = new GCheckbox(this, 775, 425, 125, 25, "Sharpen");
+  boxBlurCheck = new GCheckbox(this, 775, 450, 125, 25, "Box Blur");
+  gaussianBlurCheck = new GCheckbox(this, 775, 475, 125, 25, "Gaussian Blur");
+  
+  //Histograms Buttons
+  greyHistogramCheck = new GCheckbox(this, 950, 400, 125, 25, "Grey");
+  redHistogramCheck = new GCheckbox(this, 950, 425, 125, 25, "Red");
+  greenHistogramCheck = new GCheckbox(this, 950, 450, 125, 25, "Green");
+  blueHistogramCheck = new GCheckbox(this, 950, 475, 125, 25, "Blue");
+  segmentationCheck = new GCheckbox(this, 950, 500, 125, 25, "Segmentation");
   
 }
 
@@ -64,6 +80,10 @@ void draw() {
   textSize(32);
   text("Original", 25, 35);
   text("Modificada", 612, 35);
+  textSize(18);
+  text("Content Type", 25, 390);
+  text("Grayscale", 612, 390);
+  text("Masks", 775, 390);
 
   // Base Canvas
   base.beginDraw();
@@ -88,8 +108,17 @@ void draw() {
   modified.background(0);
   modified.loadPixels();
   setPixels(base, modified);
-  if(grayscaleCheck.isSelected()){
-    modified.pixels = blackAndWhite(modified.pixels);
+  if(meanCheck.isSelected()){
+    modified.pixels = blackAndWhite(modified.pixels, 1.0/3, 1.0/3, 1.0/3);
+  }
+  if(ccirCheck.isSelected()){
+    modified.pixels = blackAndWhite(modified.pixels, 0.2989, 0.5870, 0.1140);
+  }
+  if(btCheck.isSelected()){
+    modified.pixels = blackAndWhite(modified.pixels, 0.2126, 0.7152, 0.0722);
+  }
+  if(smpteCheck.isSelected()){
+    modified.pixels = blackAndWhite(modified.pixels, 0.212, 0.701, 0.087);
   }
   if(edgeDetectionCheck.isSelected()){
     modified.pixels = applyConvolution(modified.pixels, edgeDetectionMatrix, 3, modified.width);
@@ -103,40 +132,48 @@ void draw() {
   if(gaussianBlurCheck.isSelected()){
     modified.pixels = applyConvolution(modified.pixels, gaussianBlurMatrix, 3, modified.width);
   }
-  if(frameRateCheck.isSelected() && contentType==2){
+  if(contentType==1){
+    text("Histograms", 950, 390);
+  }
+  if(contentType==2){
     textSize(25);
-    text("FPS: " + int(frameRate), 612, 375);
+    text("FPS: " + int(frameRate), 950, 400);
   }
   modified.updatePixels();  
   modified.endDraw();
   
   image(modified, 612, 50);
   
-  if(histogramCheck.isSelected() && contentType==1){
-    int[] hist = histogram(modified.pixels);
-    int histMax = max(hist);
-  
-    stroke(255);
-    for (int i = 0; i < img.width; i+=2) {
-      int which = int(map(i, 0, img.width, 0, 255));
-      int y = int(map(hist[which], 0, histMax, img.height, 0));
-      line(612 + i, img.height + 50, 612 + i, y + 50);
-    }
+  if(greyHistogramCheck.isSelected() && contentType==1){
+    int[] hist = greyHistogram(modified.pixels);
+    drawHistogram(hist, color(255,255,255), img);
+  }
+  if(redHistogramCheck.isSelected() && contentType==1){
+    int[] hist = rgbHistogram(modified.pixels, 'r');
+    drawHistogram(hist, color(255,0,0), img);
+  }
+  if(greenHistogramCheck.isSelected() && contentType==1){
+    int[] hist = rgbHistogram(modified.pixels, 'g');
+    drawHistogram(hist, color(0,255,0), img);
+  }
+  if(blueHistogramCheck.isSelected() && contentType==1){
+    int[] hist = rgbHistogram(modified.pixels, 'b');
+    drawHistogram(hist, color(0,0,255), img);
   }
   
 }
 
-color [] blackAndWhite(color[] pixelArray){
+color [] blackAndWhite(color[] pixelArray, float red, float green, float blue){
   for(int i = 0; i < pixelArray.length; i++){
-    float r = red(color(pixelArray[i]));
-    float g = green(color(pixelArray[i]));
-    float b = blue(color(pixelArray[i]));
-    pixelArray[i] = color((r + g + b) / 3);
+    float r = red(color(pixelArray[i])) * red;
+    float g = green(color(pixelArray[i])) * green;
+    float b = blue(color(pixelArray[i])) * blue;
+    pixelArray[i] = color(r + g + b);
   }
   return pixelArray;
 }
 
-int[] histogram(color[] pixelArray){
+int[] greyHistogram(color[] pixelArray){
   int[] hist = new int[256]; 
   for (int i = 0; i < pixelArray.length; i++) {
     int bright = int(brightness(pixelArray[i]));
@@ -144,6 +181,44 @@ int[] histogram(color[] pixelArray){
   }
   
   return hist;
+}
+
+int[] rgbHistogram(color[] pixelArray, char channel){
+  int[] hist = new int[256]; 
+  switch(channel){
+    case 'r':
+      for (int i = 0; i < pixelArray.length; i++) {
+        int value = int(red(pixelArray[i]));
+        hist[value]++; 
+      }
+      break;
+    case 'g':
+      for (int i = 0; i < pixelArray.length; i++) {
+        int value = int(green(pixelArray[i]));
+        hist[value]++; 
+      }
+      break;
+    case 'b':
+      for (int i = 0; i < pixelArray.length; i++) {
+        int value = int(blue(pixelArray[i]));
+        hist[value]++; 
+      }
+      break;
+    default:
+      break;
+  }
+  return hist;
+}
+
+void drawHistogram(int[] hist, color strokeColor, PImage img){
+  int histMax = max(hist);
+  
+  stroke(strokeColor);
+  for (int i = 0; i < img.width; i+=2) {
+    int which = int(map(i, 0, img.width, 0, 255));
+    int y = int(map(hist[which], 0, histMax, img.height, 0));
+    line(612 + i, img.height + 50, 612 + i, y + 50);
+  }
 }
 
 color[] applyConvolution(color[] pixelArray, float[][] matrix, int matrixsize, int imgWidth){
@@ -191,16 +266,43 @@ void movieEvent(Movie m) {
   m.read();
 }
 
-public void handleImageButton(GButton button, GEvent event){
+public void handleCatButton(GButton button, GEvent event){
   contentType = 1;
-  histogramCheck.setVisible(true);
+  greyHistogramCheck.setVisible(true);
+  redHistogramCheck.setVisible(true);
+  greenHistogramCheck.setVisible(true);
+  blueHistogramCheck.setVisible(true);
   segmentationCheck.setVisible(true);
-  frameRateCheck.setVisible(false);
+  img = catImg;
 }
+
+
+public void handleBaboonButton(GButton button, GEvent event){
+  contentType = 1;
+  greyHistogramCheck.setVisible(true);
+  redHistogramCheck.setVisible(true);
+  greenHistogramCheck.setVisible(true);
+  blueHistogramCheck.setVisible(true);
+  segmentationCheck.setVisible(true);
+  img = baboonImg;
+}
+
+public void handleLenaButton(GButton button, GEvent event){
+  contentType = 1;
+  greyHistogramCheck.setVisible(true);
+  redHistogramCheck.setVisible(true);
+  greenHistogramCheck.setVisible(true);
+  blueHistogramCheck.setVisible(true);
+  segmentationCheck.setVisible(true);
+  img = lenaImg;
+}
+
 
 public void handleVideoButton(GButton button, GEvent event){
   contentType = 2;
-  histogramCheck.setVisible(false);
+  greyHistogramCheck.setVisible(false);
+  redHistogramCheck.setVisible(false);
+  greenHistogramCheck.setVisible(false);
+  blueHistogramCheck.setVisible(false);
   segmentationCheck.setVisible(false);
-  frameRateCheck.setVisible(true);
 }
