@@ -140,6 +140,7 @@ void draw() {
     textSize(25);
     text("FPS: " + int(frameRate), 950, 400);
   }
+
   modified.updatePixels();  
   modified.endDraw();
   
@@ -161,7 +162,7 @@ void draw() {
     int[] hist = rgbHistogram(modified.pixels, 'b');
     drawHistogram(hist, color(0,0,255), img);
   }
-  if(segmentationCheck.isSelected() && contentType==1){
+  if(segmentationCheck.isSelected() && contentType==1) {
     int segmentationMinValue;
     int segmentationMaxValue;
     stroke(255, 0, 0);
@@ -182,11 +183,17 @@ void draw() {
       segmentationMinValue = mouseX - 612 - segmentatinRange;
       segmentationMaxValue = mouseX - 612 + segmentatinRange;
     }
+
     strokeWeight(1);
     int[] hist = segmentationHistogram(modified.pixels);
+
+    modified.pixels = segmentImage(modified.pixels, segmentationMinValue, segmentationMaxValue);
+    modified.updatePixels();  
+    modified.endDraw();    
+    image(modified, 612, 50);
+
     drawSegmentationHistogram(hist, color(255,255,255), img, segmentationMinValue, segmentationMaxValue);
   }
-  
 }
 
 void keyPressed() {
@@ -207,13 +214,24 @@ void keyPressed() {
   } 
 }
 
-color [] blackAndWhite(color[] pixelArray, float red, float green, float blue){
+color [] blackAndWhite(color[] pixelArray, float red, float green, float blue) {
   for(int i = 0; i < pixelArray.length; i++){
     float r = red(color(pixelArray[i])) * red;
     float g = green(color(pixelArray[i])) * green;
     float b = blue(color(pixelArray[i])) * blue;
     pixelArray[i] = color(r + g + b);
   }
+  return pixelArray;
+}
+
+color[] segmentImage(color[] pixelArray, int minValue, int maxValue){
+  for(int i = 0; i < pixelArray.length; i++) {
+    int brightness = int(brightness(pixelArray[i]));
+    if (brightness < minValue || brightness > maxValue) {
+      pixelArray[i] = color(0, 0, 0);
+    }
+  }
+
   return pixelArray;
 }
 
