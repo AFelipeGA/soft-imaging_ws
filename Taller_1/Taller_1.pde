@@ -11,7 +11,7 @@ GCheckbox meanCheck, ccirCheck, btCheck, smpteCheck; // Grayscale Buttons
 GCheckbox edgeDetectionCheck, sharpenCheck, boxBlurCheck, gaussianBlurCheck; // Masks Buttons
 
 int contentType = 1; // 1=Image, 2=Video
-int modifierType = 1; // 1=GrayScale, 
+int modifierType = 1; // 1=GrayScale
 
 float[][] sharpenMatrix =  { { 0, -1.0, 0 } , 
                              { -1.0, 5.0, -1.0 } ,
