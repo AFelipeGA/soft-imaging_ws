@@ -1,6 +1,12 @@
 import g4p_controls.*;
 import processing.video.*;
 
+// Class with static variables that emulate an Enum since it is not supported
+class ContentType {
+  static final int IMAGE = 1;
+  static final int VIDEO = 2;
+}
+
 PGraphics base, modified; // PGraphics
 PImage img, catImg, baboonImg, lenaImg; // Images
 Movie video; // Video
@@ -10,7 +16,7 @@ GCheckbox greyHistogramCheck, redHistogramCheck, greenHistogramCheck, blueHistog
 GCheckbox meanCheck, ccirCheck, btCheck, smpteCheck; // Grayscale Buttons
 GCheckbox edgeDetectionCheck, sharpenCheck, boxBlurCheck, gaussianBlurCheck; // Masks Buttons
 
-int contentType = 1; // 1=Image, 2=Video
+int contentType = ContentType.IMAGE;
 int modifierType = 1; // 1=GrayScale
 int segmentatinRange = 20; // range of segmentation option
 
@@ -91,10 +97,10 @@ void draw() {
   base.background(0);
   img.resize(512,300);
   switch(contentType){
-    case 1:
+    case ContentType.IMAGE:
       base.image(img, 0, 0);
       break;
-     case 2:
+     case ContentType.VIDEO:
       base.image(video, 0, 0);
       break;
      default:
@@ -133,10 +139,10 @@ void draw() {
   if(gaussianBlurCheck.isSelected()){
     modified.pixels = applyConvolution(modified.pixels, gaussianBlurMatrix, 3, modified.width);
   }
-  if(contentType==1){
+  if(contentType == ContentType.IMAGE){
     text("Histograms", 950, 390);
   }
-  if(contentType==2){
+  if(contentType == ContentType.VIDEO){
     textSize(25);
     text("FPS: " + int(frameRate), 950, 400);
   }
@@ -146,23 +152,23 @@ void draw() {
   
   image(modified, 612, 50);
   
-  if(greyHistogramCheck.isSelected() && contentType==1){
+  if(greyHistogramCheck.isSelected() && contentType == ContentType.IMAGE){
     int[] hist = greyHistogram(modified.pixels);
     drawHistogram(hist, color(255,255,255), img);
   }
-  if(redHistogramCheck.isSelected() && contentType==1){
+  if(redHistogramCheck.isSelected() && contentType == ContentType.IMAGE){
     int[] hist = rgbHistogram(modified.pixels, 'r');
     drawHistogram(hist, color(255,0,0), img);
   }
-  if(greenHistogramCheck.isSelected() && contentType==1){
+  if(greenHistogramCheck.isSelected() && contentType == ContentType.IMAGE){
     int[] hist = rgbHistogram(modified.pixels, 'g');
     drawHistogram(hist, color(0,255,0), img);
   }
-  if(blueHistogramCheck.isSelected() && contentType==1){
+  if(blueHistogramCheck.isSelected() && contentType == ContentType.IMAGE){
     int[] hist = rgbHistogram(modified.pixels, 'b');
     drawHistogram(hist, color(0,0,255), img);
   }
-  if(segmentationCheck.isSelected() && contentType==1) {
+  if(segmentationCheck.isSelected() && contentType == ContentType.IMAGE) {
     int segmentationMinValue;
     int segmentationMaxValue;
     stroke(255, 0, 0);
@@ -334,7 +340,7 @@ color convolution(int x, int y, float[][] matrix, int matrixsize,  color[] pixel
   rtotal = constrain(rtotal, 0, 255);
   gtotal = constrain(gtotal, 0, 255);
   btotal = constrain(btotal, 0, 255);
-  
+
   return color(rtotal, gtotal, btotal); 
 }
 
@@ -349,7 +355,7 @@ void movieEvent(Movie m) {
 }
 
 public void handleCatButton(GButton button, GEvent event){
-  contentType = 1;
+  contentType = ContentType.IMAGE;
   greyHistogramCheck.setVisible(true);
   redHistogramCheck.setVisible(true);
   greenHistogramCheck.setVisible(true);
@@ -360,7 +366,7 @@ public void handleCatButton(GButton button, GEvent event){
 
 
 public void handleBaboonButton(GButton button, GEvent event){
-  contentType = 1;
+  contentType = ContentType.IMAGE;
   greyHistogramCheck.setVisible(true);
   redHistogramCheck.setVisible(true);
   greenHistogramCheck.setVisible(true);
@@ -370,7 +376,7 @@ public void handleBaboonButton(GButton button, GEvent event){
 }
 
 public void handleLenaButton(GButton button, GEvent event){
-  contentType = 1;
+  contentType = ContentType.IMAGE;
   greyHistogramCheck.setVisible(true);
   redHistogramCheck.setVisible(true);
   greenHistogramCheck.setVisible(true);
@@ -381,7 +387,7 @@ public void handleLenaButton(GButton button, GEvent event){
 
 
 public void handleVideoButton(GButton button, GEvent event){
-  contentType = 2;
+  contentType = ContentType.VIDEO;
   greyHistogramCheck.setVisible(false);
   redHistogramCheck.setVisible(false);
   greenHistogramCheck.setVisible(false);
