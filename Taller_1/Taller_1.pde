@@ -12,6 +12,7 @@ GCheckbox edgeDetectionCheck, sharpenCheck, boxBlurCheck, gaussianBlurCheck; // 
 
 int contentType = 1; // 1=Image, 2=Video
 int modifierType = 1; // 1=GrayScale
+int segmentatinRange = 20; // range of segmentation option
 
 float[][] sharpenMatrix =  { { 0, -1.0, 0 } , 
                              { -1.0, 5.0, -1.0 } ,
@@ -160,7 +161,50 @@ void draw() {
     int[] hist = rgbHistogram(modified.pixels, 'b');
     drawHistogram(hist, color(0,0,255), img);
   }
+  if(segmentationCheck.isSelected() && contentType==1){
+    int segmentationMinValue;
+    int segmentationMaxValue;
+    stroke(255, 0, 0);
+    strokeWeight(3);
+    if(mouseX < 612 + segmentatinRange){
+      line(612, img.height, 612, img.height + 50);
+      line(612 + (segmentatinRange*2), img.height, 612 + (segmentatinRange*2), img.height + 50);
+      segmentationMinValue = 0;
+      segmentationMaxValue = segmentatinRange * 2;
+    } else if(mouseX > 612 + img.width - segmentatinRange){
+      line(612 + img.width - (segmentatinRange*2), img.height, 612 + img.width - (segmentatinRange*2), img.height + 50);
+      line(612 + img.width, img.height, 612 + img.width, img.height + 50);
+      segmentationMinValue = img.width - (segmentatinRange*2);
+      segmentationMaxValue = img.width;
+    } else{
+      line(mouseX - segmentatinRange, img.height, mouseX - segmentatinRange, img.height + 50);
+      line(mouseX + segmentatinRange, img.height, mouseX + segmentatinRange, img.height + 50);
+      segmentationMinValue = mouseX - 612 - segmentatinRange;
+      segmentationMaxValue = mouseX - 612 + segmentatinRange;
+    }
+    strokeWeight(1);
+    int[] hist = segmentationHistogram(modified.pixels);
+    drawSegmentationHistogram(hist, color(255,255,255), img, segmentationMinValue, segmentationMaxValue);
+  }
   
+}
+
+void keyPressed() {
+  if (key == CODED) {
+    if (keyCode == UP) {
+      if(segmentatinRange + 20 > 240){
+        segmentatinRange = 240;
+      } else {
+        segmentatinRange += 20;
+      }
+    } else if (keyCode == DOWN) {
+      if(segmentatinRange - 20 < 20){
+        segmentatinRange = 20;
+      } else {
+        segmentatinRange -= 20;
+      }
+    } 
+  } 
 }
 
 color [] blackAndWhite(color[] pixelArray, float red, float green, float blue){
@@ -210,11 +254,31 @@ int[] rgbHistogram(color[] pixelArray, char channel){
   return hist;
 }
 
+int[] segmentationHistogram(color[] pixelArray){
+  int[] hist = new int[256];
+   for (int i = 0; i < pixelArray.length; i++) {
+    int value = int(brightness(pixelArray[i]));
+    hist[value]++; 
+  }
+  return hist;
+}
+
 void drawHistogram(int[] hist, color strokeColor, PImage img){
   int histMax = max(hist);
   
   stroke(strokeColor);
   for (int i = 0; i < img.width; i+=2) {
+    int which = int(map(i, 0, img.width, 0, 255));
+    int y = int(map(hist[which], 0, histMax, img.height, 0));
+    line(612 + i, img.height + 50, 612 + i, y + 50);
+  }
+}
+
+void drawSegmentationHistogram(int[] hist, color strokeColor, PImage img, int minValue, int maxValue){
+  int histMax = max(hist);
+  
+  stroke(strokeColor);
+  for (int i = minValue; i < maxValue; i+=2) {
     int which = int(map(i, 0, img.width, 0, 255));
     int y = int(map(hist[which], 0, histMax, img.height, 0));
     line(612 + i, img.height + 50, 612 + i, y + 50);
