@@ -1,21 +1,22 @@
 class NeckerCube {
+    private PGraphics mainWindow;
     private boolean squareOver;
     private int sideWidth = 100;
     private float translateX;
     private float translateY;
 
-    NeckerCube() {
+    NeckerCube(PGraphics mainWindow) {
+        this.mainWindow = mainWindow;
         noFill();
         strokeWeight(5);
         strokeCap(ROUND);
-        this.translateX = width / 2.0;
-        this.translateY = height / 3.0;
+        this.translateX = this.mainWindow.width / 2.0 + 200;
+        this.translateY = this.mainWindow.height / 3.0;
         background(0);
         this.squareOver = false;
     }
 
     void draw() {
-        translate(this.translateX, this.translateY);
         this.updateMouse();
         this.drawCube();
     }
@@ -59,28 +60,28 @@ class NeckerCube {
         stroke(fillColor);
         switch (side) {
             case SideType.POSITIVE_Z:
-                vertex(0, 0);
-                vertex(-2 * sideWidth, 0);
-                vertex(-2 * sideWidth, 2 * sideWidth);
-                vertex(0, 2 * sideWidth);
+                vertex(this.translateX, this.translateY);
+                vertex(this.translateX - 2 * sideWidth, this.translateY);
+                vertex(this.translateX - 2 * sideWidth, this.translateY + 2 * sideWidth);
+                vertex(this.translateX, this.translateY + 2 * sideWidth);
                 break;
             case SideType.NEGATIVE_Z:
-                vertex(sideWidth, -1 * sideWidth);
-                vertex(-1 * sideWidth, -1 * sideWidth);
-                vertex(-1 * sideWidth, sideWidth);
-                vertex(sideWidth, sideWidth);
+                vertex(this.translateX + sideWidth, this.translateY - sideWidth);
+                vertex(this.translateX - sideWidth, this.translateY - sideWidth);
+                vertex(this.translateX - sideWidth, this.translateY + sideWidth);
+                vertex(this.translateX + sideWidth, this.translateY + sideWidth);
                 break;
             case SideType.NEGATIVE_Y:
-                vertex(-2 * sideWidth, 0);
-                vertex(-1 * sideWidth, -1 * sideWidth);
-                vertex(-2 * sideWidth, 2 * sideWidth);
-                vertex(-1 * sideWidth, sideWidth);
+                vertex(this.translateX - 2 * sideWidth, this.translateY);
+                vertex(this.translateX - sideWidth, this.translateY - sideWidth);
+                vertex(this.translateX - 2 * sideWidth, this.translateY + 2 * sideWidth);
+                vertex(this.translateX - sideWidth, this.translateY + sideWidth);
                 break;
             case SideType.POSITIVE_Y:
-                vertex(0, 0);
-                vertex(sideWidth, -1 * sideWidth);
-                vertex(0, 2 * sideWidth);
-                vertex(sideWidth, sideWidth);
+                vertex(this.translateX, this.translateY);
+                vertex(this.translateX + sideWidth, this.translateY - sideWidth);
+                vertex(this.translateX, this.translateY + 2 * sideWidth);
+                vertex(this.translateX + sideWidth, this.translateY + sideWidth);
                 break;
         }
     }
