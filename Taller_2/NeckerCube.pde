@@ -1,18 +1,15 @@
 class NeckerCube {
-    private PGraphics mainWindow;
     private boolean squareOver;
     private int sideWidth = 100;
     private float translateX;
     private float translateY;
 
-    NeckerCube(PGraphics mainWindow) {
-        this.mainWindow = mainWindow;
+    NeckerCube() {
         noFill();
         strokeWeight(5);
         strokeCap(ROUND);
-        this.translateX = this.mainWindow.width / 2.0 + 200;
-        this.translateY = this.mainWindow.height / 3.0;
-        background(0);
+        this.translateX = width / 2.0 + 200;
+        this.translateY = height / 3.0;
         this.squareOver = false;
     }
 

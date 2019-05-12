@@ -40,17 +40,17 @@ void setup() {
 
 void draw() {
     mainWindow.beginDraw();
+    mainWindow.background(0);
+    mainWindow.endDraw();
+    image(mainWindow, 200, 0);
 
     if (opticalIllusion1.isSelected()) {
         if (!isSettedUp1) {
-            cube = new NeckerCube(mainWindow);
+            cube = new NeckerCube();
             isSettedUp1 = true;
         }
         cube.draw();
     } else {
         isSettedUp1 = false;
     }
-
-    mainWindow.endDraw();
-    image(mainWindow, 200, 0);
 }
