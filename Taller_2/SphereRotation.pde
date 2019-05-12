@@ -1,13 +1,13 @@
 class SphereRotation {
-    float radio;
-    int points;
-    float rotationDegrees;
-    float rotateY;
+    private float radio;
+    private int points;
+    private float rotationDegrees;
+    private float rotateY;
     Ellipse[] ellipses;
 
     SphereRotation() {
         this.radio = height / 3.0;
-        this.points = 1000;
+        this.points = 5000;
         this.rotationDegrees = PI / 50.0;
         this.rotateY = this.rotationDegrees;
         this.ellipses = new Ellipse[points];

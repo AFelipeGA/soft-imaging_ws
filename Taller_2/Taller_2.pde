@@ -27,7 +27,7 @@ class ColorType {
 }
 
 void setup() {
-    size(1000, 550);
+    size(1000, 550, P3D);
     mainWindow = createGraphics(800, 550);
     textSize(25);
     opticalIllusion1 = new GCheckbox(this, 20, 50, 500, 25, "Cubo de Necker");
@@ -38,6 +38,11 @@ void setup() {
     opticalIllusion6 = new GCheckbox(this, 20, 175, 500, 25, "Ilusión óptica 6");
 }
 
+void resetLinesAndFills() {
+    noFill();
+    noStroke();
+}
+
 void draw() {
     mainWindow.beginDraw();
     mainWindow.background(0);
@@ -46,11 +51,23 @@ void draw() {
 
     if (opticalIllusion1.isSelected()) {
         if (!isSettedUp1) {
+            resetLinesAndFills();
             cube = new NeckerCube();
             isSettedUp1 = true;
         }
         cube.draw();
     } else {
         isSettedUp1 = false;
+    }
+
+    if (opticalIllusion2.isSelected()) {
+        if (!isSettedUp2) {
+            resetLinesAndFills();
+            sphere = new SphereRotation();
+            isSettedUp2 = true;
+        }
+        sphere.draw();
+    } else {
+        isSettedUp2 = false;
     }
 }
