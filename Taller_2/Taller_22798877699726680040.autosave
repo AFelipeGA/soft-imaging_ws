@@ -20,52 +20,43 @@ class SideType {
 
 // Class with static variables that emulate an Enum since it is not supported
 class ColorType {
-    static final color WHITE = #FFFFFF;
-    static final color BLUE = #106CC9;
-    static final color RED = #C12C2C;
+    static final int WHITE = 1;
+    static final int BLUE = 2;
 }
 
 void setup() {
-    size(1000, 550);
-    main = createGraphics(800, 550);
-    textSize(25);
-    opticalIllusion1 = new GCheckbox(this, 20, 50, 500, 25, "Cubo de Necker");
-    opticalIllusion2 = new GCheckbox(this, 20, 75, 500, 25, "Ilusión óptica 2");
-    opticalIllusion3 = new GCheckbox(this, 20, 100, 500, 25, "Ilusión óptica 3");
-    opticalIllusion4 = new GCheckbox(this, 20, 125, 500, 25, "Ilusión óptica 4");
-    opticalIllusion5 = new GCheckbox(this, 20, 150, 500, 25, "Ilusión óptica 5");
-    opticalIllusion6 = new GCheckbox(this, 20, 175, 500, 25, "Ilusión óptica 6");
+    size(1152, 550);
+    main = createGraphics(512, 300);
+    opticalIllusion1 = new GCheckbox(this, 20, 50, 125, 25, "Cubo de Necker");
+    opticalIllusion2 = new GCheckbox(this, 20, 75, 125, 25, "Ilusión óptica 2");
+    opticalIllusion3 = new GCheckbox(this, 20, 100, 125, 25, "Ilusión óptica 3");
+    opticalIllusion4 = new GCheckbox(this, 20, 125, 125, 25, "Ilusión óptica 4");
+    opticalIllusion5 = new GCheckbox(this, 20, 150, 125, 25, "Ilusión óptica 5");
+    opticalIllusion6 = new GCheckbox(this, 20, 75, 125, 25, "Ilusión óptica 6");
+    //setUpNeckerCube();
 }
 
 void draw() {
-    main.beginDraw();
-    main.background(0);
-    main.endDraw();
-    image(main, 200, 0);
-    if(opticalIllusion1.isSelected()){
-        setUpNeckerCube();
-        drawNeckerCube();
-    }
+    //drawNeckerCube();
 }
-
-/*--------------------- Necket Cube -----------------------*/
 
 void setUpNeckerCube() {
     noFill();
     strokeWeight(5);
     strokeCap(ROUND);
-    println("var: "+main.height);
-    translateX = 700;
-    translateY = 200;
+    translateX = width / 2.0;
+    translateY = height / 3.0;
 }
 
 void drawNeckerCube() {
+    background(0);
+    translate(translateX, translateY);
     updateMouse();
     drawCube();
 }
 
 void drawCube() {
-    if (squareOver) {        
+    if (squareOver) {
         beginShape(QUADS);
         // -Z "back" face
         drawSide(SideType.NEGATIVE_Z, ColorType.BLUE);
@@ -110,28 +101,28 @@ void drawSide(int side, int colorType) {
     }
     switch (side) {
         case SideType.POSITIVE_Z:
-            vertex(translateX, translateY);
-            vertex(translateX - 2 * sideWidth, translateY);
-            vertex(translateX - 2 * sideWidth, translateY + 2 * sideWidth);
-            vertex(translateX, translateY + 2 * sideWidth);
+            vertex(0, 0);
+            vertex(-2 * sideWidth, 0);
+            vertex(-2 * sideWidth, 2 * sideWidth);
+            vertex(0, 2 * sideWidth);
             break;
         case SideType.NEGATIVE_Z:
-            vertex(translateX + sideWidth, translateY - 1 * sideWidth);
-            vertex(translateX - 1 * sideWidth, translateY - 1 * sideWidth);
-            vertex(translateX - 1 * sideWidth, translateY + sideWidth);
-            vertex(translateX + sideWidth, translateY + sideWidth);
+            vertex(sideWidth, -1 * sideWidth);
+            vertex(-1 * sideWidth, -1 * sideWidth);
+            vertex(-1 * sideWidth, sideWidth);
+            vertex(sideWidth, sideWidth);
             break;
         case SideType.NEGATIVE_Y:
-            vertex(translateX - 2 * sideWidth, translateY);
-            vertex(translateX - 1 * sideWidth, translateY - 1 * sideWidth);
-            vertex(translateX - 2 * sideWidth, translateY + 2 * sideWidth);
-            vertex(translateX - 1 * sideWidth, translateY + sideWidth);
+            vertex(-2 * sideWidth, 0);
+            vertex(-1 * sideWidth, -1 * sideWidth);
+            vertex(-2 * sideWidth, 2 * sideWidth);
+            vertex(-1 * sideWidth, sideWidth);
             break;
         case SideType.POSITIVE_Y:
-            vertex(translateX, translateY);
-            vertex(translateX + sideWidth, translateY - 1 * sideWidth);
-            vertex(translateX, translateY + 2 * sideWidth);
-            vertex(translateX + sideWidth, translateY + sideWidth);
+            vertex(0, 0);
+            vertex(sideWidth, -1 * sideWidth);
+            vertex(0, 2 * sideWidth);
+            vertex(sideWidth, sideWidth);
             break;
     }
 }
@@ -143,5 +134,3 @@ void updateMouse() {
 boolean overSquare(int x, int y) {
     return x >= translateX - 2 * sideWidth && x <= translateX + sideWidth && y >= translateY - 2 * sideWidth && y <= translateY + sideWidth;
 }
-
-/* ------------------------------------------------------------ */
