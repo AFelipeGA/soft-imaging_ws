@@ -12,14 +12,14 @@ Implementar al menos 6 ilusiones de tres tipos distintos (paradójicas, geométr
 
 1. Complete la tabla
 
-| Ilusión | Categoria | Referencia | Tipo de interactividad (si aplica) | URL código base (si aplica) |
-|---------|-----------|------------|------------------------------------|-----------------------------|
-|         |           |            |                                    |                             |
-|         |           |            |                                    |                             |
-|         |           |            |                                    |                             |
-|         |           |            |                                    |                             |
-|         |           |            |                                    |                             |
-|         |           |            |                                    |                             |
+|          Ilusión          | Categoria |                  Referencia                     |                    Tipo de interactividad (si aplica)                                | URL código base (si aplica) |
+|---------------------------|-----------|-------------------------------------------------|------------------------------------|--------------------------|
+|       Cubo de Necker      |  Ambigua  |  https://www.illusionsindex.org/ir/necker-cube  | Pasar el mouse sobre el cubo hace que se forme un cubo normal. |                             |
+| Esfera con puntos rotando |    Otra   | https://michaelbach.de/ot/col-equilu/index.html | La esfera gira en un sentido pero mirando fijamente pareciera que girara hacia el otro lado |                             |
+|                |           |            |                                    |                             |
+|                |           |            |                                    |                             |
+|                |           |            |                                    |                             |
+|                |           |            |                                    |                             |
 
 2. Describa brevememente las referencias estudiadas y los posibles temas en los que le gustaría profundizar
 
