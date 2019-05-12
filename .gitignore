@@ -1,3 +1,7 @@
 # IDE's configuration
 .idea/
 .vscode/
+
+# Processing stuff
+Taller_1/*.autosave
+Taller_2/*.autosave
