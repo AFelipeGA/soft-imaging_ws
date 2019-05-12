@@ -47,6 +47,8 @@ void draw() {
     }
 }
 
+/*--------------------- Necket Cube -----------------------*/
+
 void setUpNeckerCube() {
     noFill();
     strokeWeight(5);
@@ -140,3 +142,5 @@ void updateMouse() {
 boolean overSquare(int x, int y) {
     return x >= translateX - 2 * sideWidth && x <= translateX + sideWidth && y >= translateY - 2 * sideWidth && y <= translateY + sideWidth;
 }
+
+/* ------------------------------------------------------------ */
