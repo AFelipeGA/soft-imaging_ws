@@ -117,29 +117,29 @@ void draw() {
 
 void keyPressed() {
     if (key == CODED) {
-        if (keyCode == LEFT && opticalIllusion4.isSelected()) {
+        if (keyCode == LEFT && opticalIllusion3.isSelected()) {
             if(figureRotation.currentFigure - 1 < 1){
                 figureRotation.changeFigure(3);
             }else{
                 figureRotation.changeFigure(figureRotation.currentFigure - 1);
             }
-        } else if (keyCode == RIGHT && opticalIllusion4.isSelected()) {
+        } else if (keyCode == RIGHT && opticalIllusion3.isSelected()) {
             if(figureRotation.currentFigure + 1 > 3){
                 figureRotation.changeFigure(1);
             }else{
                 figureRotation.changeFigure(figureRotation.currentFigure + 1);
             }
-        } else if (keyCode == UP && opticalIllusion4.isSelected()) {
+        } else if (keyCode == UP && opticalIllusion3.isSelected()) {
             if(figureRotation.rotationSpeed + 1 <= 5){
                 figureRotation.changeRotationSpeed(figureRotation.rotationSpeed + 1);
             }
-        } else if (keyCode == DOWN && opticalIllusion4.isSelected()) {
+        } else if (keyCode == DOWN && opticalIllusion3.isSelected()) {
             if(figureRotation.rotationSpeed - 1 >= 1){
                 figureRotation.changeRotationSpeed(figureRotation.rotationSpeed - 1);
             }
-        } else if (keyCode == CONTROL && opticalIllusion3.isSelected()){
+        } else if (keyCode == CONTROL && opticalIllusion4.isSelected()){
             puzzle.updatePositions();
-        } else if (keyCode == SHIFT && opticalIllusion3.isSelected()){
+        } else if (keyCode == SHIFT && opticalIllusion4.isSelected()){
             puzzle.resetPositions();
         } 
     } 
