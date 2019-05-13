@@ -11,6 +11,7 @@ boolean isSettedUp1, isSettedUp2, isSettedUp3, isSettedUp4, isSettedUp5, isSette
 NeckerCube cube;
 SphereRotation sphere;
 FigureRotation figureRotation;
+TrianglePuzzle puzzle;
 RotatingFace face;
 DevilsFork fork;
 
@@ -37,7 +38,7 @@ void setup() {
     opticalIllusion1 = new GCheckbox(this, 20, 50, 500, 25, "Cubo de Necker");
     opticalIllusion2 = new GCheckbox(this, 20, 75, 500, 25, "Rotación de una esfera");
     opticalIllusion3 = new GCheckbox(this, 20, 100, 500, 25, "Giración");
-    opticalIllusion4 = new GCheckbox(this, 20, 125, 500, 25, "Ilusión óptica 4");
+    opticalIllusion4 = new GCheckbox(this, 20, 125, 500, 25, "Rompecabezas triangular");
     opticalIllusion5 = new GCheckbox(this, 20, 150, 500, 25, "Cara ambigua");
     opticalIllusion6 = new GCheckbox(this, 20, 175, 500, 25, "Tenedor del diablo");
 }
@@ -83,6 +84,15 @@ void draw() {
     } else {
         isSettedUp3 = false;
     }
+    if (opticalIllusion4.isSelected()) {
+        if (!isSettedUp4) {
+            puzzle = new TrianglePuzzle();
+            isSettedUp4 = true;
+        }
+        puzzle.draw();
+    } else {
+        isSettedUp4 = false;
+    }
     if (opticalIllusion5.isSelected()) {
         if (!isSettedUp5) {
             resetLinesAndFills();
@@ -106,28 +116,31 @@ void draw() {
 }
 
 void keyPressed() {
-      if (key == CODED) {
-        if (keyCode == LEFT) {
+    if (key == CODED) {
+        if (keyCode == LEFT && opticalIllusion4.isSelected()) {
             if(figureRotation.currentFigure - 1 < 1){
                 figureRotation.changeFigure(3);
             }else{
                 figureRotation.changeFigure(figureRotation.currentFigure - 1);
             }
-        } else if (keyCode == RIGHT) {
+        } else if (keyCode == RIGHT && opticalIllusion4.isSelected()) {
             if(figureRotation.currentFigure + 1 > 3){
                 figureRotation.changeFigure(1);
             }else{
                 figureRotation.changeFigure(figureRotation.currentFigure + 1);
             }
-        } 
-        if (keyCode == UP) {
+        } else if (keyCode == UP && opticalIllusion4.isSelected()) {
             if(figureRotation.rotationSpeed + 1 <= 5){
                 figureRotation.changeRotationSpeed(figureRotation.rotationSpeed + 1);
             }
-        } else if (keyCode == DOWN) {
+        } else if (keyCode == DOWN && opticalIllusion4.isSelected()) {
             if(figureRotation.rotationSpeed - 1 >= 1){
                 figureRotation.changeRotationSpeed(figureRotation.rotationSpeed - 1);
             }
+        } else if (keyCode == CONTROL && opticalIllusion3.isSelected()){
+            puzzle.updatePositions();
+        } else if (keyCode == SHIFT && opticalIllusion3.isSelected()){
+            puzzle.resetPositions();
         } 
-      } 
-    }
+    } 
+}
