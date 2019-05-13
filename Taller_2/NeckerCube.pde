@@ -1,4 +1,4 @@
-class NeckerCube {
+  class NeckerCube {
     private boolean squareOver;
     private int sideWidth = 100;
     private float translateX;

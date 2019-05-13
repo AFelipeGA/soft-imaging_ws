@@ -10,6 +10,7 @@ boolean isSettedUp1, isSettedUp2, isSettedUp3, isSettedUp4, isSettedUp5, isSette
 // Illusions
 NeckerCube cube;
 SphereRotation sphere;
+RotatingFace face;
 
 // Class with static variables that emulate an Enum since it is not supported
 class SideType {
@@ -34,7 +35,7 @@ void setup() {
     opticalIllusion2 = new GCheckbox(this, 20, 75, 500, 25, "Rotación de una esfera");
     opticalIllusion3 = new GCheckbox(this, 20, 100, 500, 25, "Ilusión óptica 3");
     opticalIllusion4 = new GCheckbox(this, 20, 125, 500, 25, "Ilusión óptica 4");
-    opticalIllusion5 = new GCheckbox(this, 20, 150, 500, 25, "Ilusión óptica 5");
+    opticalIllusion5 = new GCheckbox(this, 20, 150, 500, 25, "Cara Giratoria");
     opticalIllusion6 = new GCheckbox(this, 20, 175, 500, 25, "Ilusión óptica 6");
 }
 
@@ -69,5 +70,16 @@ void draw() {
         sphere.draw();
     } else {
         isSettedUp2 = false;
+    }
+    
+    if (opticalIllusion5.isSelected()) {
+        if (!isSettedUp5) {
+            resetLinesAndFills();
+            face = new RotatingFace();
+            isSettedUp5 = true;
+        }
+        face.draw();
+    } else {
+        isSettedUp5 = false;
     }
 }
