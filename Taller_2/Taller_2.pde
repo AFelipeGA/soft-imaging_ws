@@ -48,6 +48,53 @@ void resetLinesAndFills() {
     noStroke();
 }
 
+void resetCheckboxes(int checkbox) {
+    switch(checkbox) {
+        case 1:
+            opticalIllusion2.setSelected(false);
+            opticalIllusion3.setSelected(false);
+            opticalIllusion4.setSelected(false);
+            opticalIllusion5.setSelected(false);
+            opticalIllusion6.setSelected(false);
+            break;
+        case 2:
+            opticalIllusion1.setSelected(false);
+            opticalIllusion3.setSelected(false);
+            opticalIllusion4.setSelected(false);
+            opticalIllusion5.setSelected(false);
+            opticalIllusion6.setSelected(false);
+            break;
+        case 3:
+            opticalIllusion1.setSelected(false);
+            opticalIllusion2.setSelected(false);
+            opticalIllusion4.setSelected(false);
+            opticalIllusion5.setSelected(false);
+            opticalIllusion6.setSelected(false);
+            break;
+        case 4:
+            opticalIllusion1.setSelected(false);
+            opticalIllusion2.setSelected(false);
+            opticalIllusion3.setSelected(false);
+            opticalIllusion5.setSelected(false);
+            opticalIllusion6.setSelected(false);
+            break;
+        case 5:
+            opticalIllusion1.setSelected(false);
+            opticalIllusion2.setSelected(false);
+            opticalIllusion3.setSelected(false);
+            opticalIllusion4.setSelected(false);
+            opticalIllusion6.setSelected(false);
+            break;
+        case 6:
+            opticalIllusion1.setSelected(false);
+            opticalIllusion2.setSelected(false);
+            opticalIllusion3.setSelected(false);
+            opticalIllusion4.setSelected(false);
+            opticalIllusion5.setSelected(false);
+            break;
+    }
+}
+
 void draw() {
     mainWindow.beginDraw();
     mainWindow.background(0);
@@ -56,6 +103,7 @@ void draw() {
 
     if (opticalIllusion1.isSelected()) {
         if (!isSettedUp1) {
+            resetCheckboxes(1);
             resetLinesAndFills();
             cube = new NeckerCube();
             isSettedUp1 = true;
@@ -67,6 +115,7 @@ void draw() {
 
     if (opticalIllusion2.isSelected()) {
         if (!isSettedUp2) {
+            resetCheckboxes(2);
             resetLinesAndFills();
             sphere = new SphereRotation();
             isSettedUp2 = true;
@@ -75,8 +124,10 @@ void draw() {
     } else {
         isSettedUp2 = false;
     }
+
     if (opticalIllusion3.isSelected()) {
         if (!isSettedUp3) {
+            resetCheckboxes(3);
             figureRotation = new FigureRotation();
             isSettedUp3 = true;
         }
@@ -84,8 +135,10 @@ void draw() {
     } else {
         isSettedUp3 = false;
     }
+
     if (opticalIllusion4.isSelected()) {
         if (!isSettedUp4) {
+            resetCheckboxes(4);
             puzzle = new TrianglePuzzle();
             isSettedUp4 = true;
         }
@@ -95,6 +148,7 @@ void draw() {
     }
     if (opticalIllusion5.isSelected()) {
         if (!isSettedUp5) {
+            resetCheckboxes(5);
             resetLinesAndFills();
             face = new RotatingFace();
             isSettedUp5 = true;
@@ -105,6 +159,7 @@ void draw() {
     }
     if (opticalIllusion6.isSelected()) {
         if (!isSettedUp6) {
+            resetCheckboxes(6);
             resetLinesAndFills();
             fork = new DevilsFork();
             isSettedUp6 = true;
