@@ -6,16 +6,17 @@ class RotatingFace {
     private float rotationDegrees;
     private float rotation;
     private PGraphics container;
-
+    
     RotatingFace() {
         this.face = loadImage("face.png");
         this.imageOver = false;
         this.marginX = 400;
-        this.marginY = 50;
+        this.marginY = 75   ;
         this.imageHeight = 398;
         this.imageWidth = 398;
-        this.rotationDegrees = PI / 100.0;
+        this.rotationDegrees = PI / 200.0;
         this.rotation = this.rotationDegrees;
+        this.container = createGraphics(imageWidth, imageHeight);
     }
 
     void draw() {
@@ -24,12 +25,17 @@ class RotatingFace {
     }
 
     void drawFace() {
+        this.container.beginDraw();
+        this.container.imageMode(CENTER);
+        this.container.background(0);
+        this.container.translate(this.imageWidth/2, this.imageHeight/2);
+        this.container.rotate(this.rotation);
+        this.container.image(this.face, 0, 0);
         if (this.imageOver) {
-          rotate(this.rotation);
-          //translate(this.imageWidth/2, this.imageHeight/2);
+          this.rotation += this.rotationDegrees;
         }
-        image(this.face, marginX, marginY);
-        this.rotation += this.rotationDegrees;
+        this.container.endDraw();
+        image(this.container, this.marginX, this.marginY);
     }
 
     void updateMouse() {
