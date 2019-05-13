@@ -16,10 +16,10 @@ Implementar al menos 6 ilusiones de tres tipos distintos (paradójicas, geométr
 |---------------------------|-----------|-------------------------------------------------|------------------------------------|--------------------------|
 |       Cubo de Necker      |  Ambigua  |  https://www.illusionsindex.org/ir/necker-cube  | Pasar el mouse sobre el cubo hace que se forme un cubo normal. |                             |
 | Esfera con puntos rotando |    Otra   | https://michaelbach.de/ot/col-equilu/index.html | La esfera gira en un sentido pero mirando fijamente pareciera que girara hacia el otro lado |                             |
+|           |     |            |                                    |                             |
 |                |           |            |                                    |                             |
-|                |           |            |                                    |                             |
-|                |           |            |                                    |                             |
-|                |           |            |                                    |                             |
+|Cara ambigua|Ambigua|https://michaelbach.de/ot/cog-rotations/index.html|Al pasar el mouse sobre la imágen, ésta empezará a rotar, revelando las distintas interpretaciones que puede tener.|                             |
+|El tenedor del diablo|Paradójica|https://michaelbach.de/ot/cog-imposs1/index.html|Pasar el mouse sobre la mitad superior de este objeto imposible mostrará un objeto posible con forma de U y sobre la mitad superior mostrará un objeto posible con forma de 3 torres |                             |
 
 2. Describa brevememente las referencias estudiadas y los posibles temas en los que le gustaría profundizar
 
