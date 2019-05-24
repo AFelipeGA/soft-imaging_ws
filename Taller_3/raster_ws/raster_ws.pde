@@ -13,6 +13,10 @@ boolean yDirection;
 // scaling is a power of 2
 int n = 4;
 
+color c1 = color(255,0,0);
+color c2 = color(0,255,0);
+color c3 = color(0,0,255); 
+
 // 2. Hints
 boolean triangleHint = true;
 boolean gridHint = true;
@@ -22,7 +26,7 @@ boolean debug = true;
 String renderer = P3D;
 
 // 4. Window dimension
-int dim = 9;
+int dim = 10;
 
 void settings() {
   size(int(pow(2, dim)), int(pow(2, dim)), renderer);
@@ -109,18 +113,23 @@ void triangleRaster() {
             w0 /= area; 
             w1 /= area; 
             w2 /= area; 
-            fill(255*w0, 255*w1, 255*w2);
+            int red = (int)((red(c1) * w0 + red(c2) * w1 + red(c3) * w1));
+            int green = (int)((green(c1) * w0 + green(c2) * w1 + green(c3) * w1));
+            int blue = (int)((blue(c1) * w0 + blue(c2) * w1 + blue(c3) * w1));
+            fill(red, green, blue);
             square(i, j, 1);
         } 
       }
     }
     popStyle();
-    /*pushStyle();
-    stroke(255, 255, 0, 125);
-    point(round(node.location(v1).x()), round(node.location(v1).y()));
-    popStyle();*/
   }
 }
+
+float edgeFunction(Vector a, Vector b, float x, float y) 
+{ 
+    return (x - node.location(a).x()) * (node.location(b).y() - node.location(a).y()) - (y - node.location(a).y()) * (node.location(b).x() - node.location(a).x()); 
+} 
+
 
 void randomizeTriangle() {
   int low = -width/2;
@@ -128,6 +137,12 @@ void randomizeTriangle() {
   v1 = new Vector(random(low, high), random(low, high));
   v2 = new Vector(random(low, high), random(low, high));
   v3 = new Vector(random(low, high), random(low, high));
+}
+
+void randomizeColors(){
+  c1 = color(random(255),random(255), random(255));
+  c2 = color(random(255),random(255), random(255));
+  c3 = color(random(255),random(255), random(255));
 }
 
 void drawTriangleHint() {
@@ -143,11 +158,6 @@ void drawTriangleHint() {
   point(v3.x(), v3.y());
   popStyle();
 }
-
-float edgeFunction(Vector a, Vector b, float x, float y) 
-{ 
-    return (x - node.location(a).x()) * (node.location(b).y() - node.location(a).y()) - (y - node.location(a).y()) * (node.location(b).x() - node.location(a).x()); 
-} 
 
 void keyPressed() {
   if (key == 'g')
@@ -166,6 +176,9 @@ void keyPressed() {
   }
   if (key == 'r')
     randomizeTriangle();
+  if (key == 'c'){
+    randomizeColors();
+  }
   if (key == ' ')
     if (spinningTask.isActive())
       spinningTask.stop();
