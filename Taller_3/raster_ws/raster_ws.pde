@@ -113,9 +113,9 @@ void triangleRaster() {
             w0 /= area; 
             w1 /= area; 
             w2 /= area; 
-            int red = (int)((red(c1) * w0 + red(c2) * w1 + red(c3) * w1));
-            int green = (int)((green(c1) * w0 + green(c2) * w1 + green(c3) * w1));
-            int blue = (int)((blue(c1) * w0 + blue(c2) * w1 + blue(c3) * w1));
+            int red = (int)((red(c1) * w0 + red(c2) * w1 + red(c3) * w2));
+            int green = (int)((green(c1) * w0 + green(c2) * w1 + green(c3) * w2));
+            int blue = (int)((blue(c1) * w0 + blue(c2) * w1 + blue(c3) * w2));
             fill(red, green, blue);
             square(i, j, 1);
         } 
