@@ -2,6 +2,15 @@ import nub.timing.*;
 import nub.primitives.*;
 import nub.core.*;
 import nub.processing.*;
+import g4p_controls.*;
+
+PGraphics mainWindow;
+
+// View variables
+GCheckbox msaaCheckbox, aaCheckbox;
+
+// AntiAliasing selection - 1: AA, 2: MSAA
+int antiAliasingSelect = 1;
 
 // 1. Nub objects
 Scene scene;
@@ -31,7 +40,7 @@ String renderer = P2D;
 // 4. Window dimension
 int dim = 9;
 
-// MSAA sample positions
+//----------------- MSAA sample positions
 Vector[] nomsaa = {
   new Vector(0.5, 0.5)
 };
@@ -78,6 +87,54 @@ Vector[] msaa16x = {
   new Vector(0.0625, 0)
 };
 
+//-------------------- Anti-Aliasing algorithm
+Vector[] noaa = {
+  new Vector(0.5, 0.5)
+};
+
+Vector[] aa2x = {
+  new Vector(0.25, 0.5),
+  new Vector(0.75, 0.5)
+};
+
+Vector[] aa4x = {
+  new Vector(0.25, 0.25),
+  new Vector(0.75, 0.25),
+  new Vector(0.25, 0.75),
+  new Vector(0.75, 0.75)
+};
+
+Vector[] aa9x = {
+  new Vector(0.25, 0.25),
+  new Vector(0.50, 0.25),
+  new Vector(0.75, 0.25),
+  new Vector(0.25, 0.50),
+  new Vector(0.50, 0.50),
+  new Vector(0.75, 0.50),
+  new Vector(0.25, 0.75),
+  new Vector(0.50, 0.75),
+  new Vector(0.75, 0.75)
+};
+
+Vector[] aa16x = {
+  new Vector(0.125, 0.125),
+  new Vector(0.375, 0.125),
+  new Vector(0.625, 0.125),
+  new Vector(0.875, 0.125),
+  new Vector(0.125, 0.375),
+  new Vector(0.375, 0.375),
+  new Vector(0.625, 0.375),
+  new Vector(0.875, 0.375),
+  new Vector(0.125, 0.625),
+  new Vector(0.375, 0.625),
+  new Vector(0.625, 0.625),
+  new Vector(0.875, 0.625),
+  new Vector(0.125, 0.875),
+  new Vector(0.375, 0.875),
+  new Vector(0.625, 0.875),
+  new Vector(0.875, 0.875)
+};
+
 void settings() {
   size(int(pow(2, dim)), int(pow(2, dim)), renderer);
   noSmooth();
@@ -114,7 +171,9 @@ void setup() {
 
   // init the triangle that's gonna be rasterized
   randomizeTriangle();
- 
+  
+  //msaaCheckbox = new GCheckbox(this, 0, 0, 500, 25, "Anti-Aliasing Algorithm");
+  //aaCheckbox = new GCheckbox(this, 0, 75, 500, 25, "MSAA Algorithm");
 }
 
 void draw() {
@@ -130,6 +189,8 @@ void draw() {
   triangleRaster();
   popStyle();
   popMatrix();
+  //msaaCheckbox = new GCheckbox(this, 0, 0, 500, 25, "Anti-Aliasing Algorithm");
+  //aaCheckbox = new GCheckbox(this, 0, 75, 500, 25, "MSAA Algorithm");
 }
 
 // Implement this function to rasterize the triangle.
@@ -187,7 +248,11 @@ void triangleRaster() {
     
     for(int i=floor(xMin); i< ceil(xMax); i++){
       for(int j=floor(yMin); j<ceil(yMax); j++){
-        float factor = msaa(sampling, p, q, r, i, j);
+        float factor = 0;
+        if(antiAliasingSelect == 1)
+          factor = aa(sampling, p, q, r, i, j);
+        else if(antiAliasingSelect == 2)
+          factor = msaa(sampling, p, q, r, i, j);
         
         if (factor > 0) {
             float w0 = edgeFunction(p, q, i+0.5, j+0.5);
@@ -221,6 +286,36 @@ float edgeFunction(Vector a, Vector b, float x, float y)
     return (x - node.location(a).x()) * (node.location(b).y() - node.location(a).y()) - (y - node.location(a).y()) * (node.location(b).x() - node.location(a).x()); 
 } 
 
+float aa(int samples, Vector a, Vector b, Vector c, float x, float y){
+  float cnt = 0;
+  Vector[] pattern = {};
+  switch(samples){
+    case 1:
+      pattern = noaa;
+      break;
+    case 2:
+      pattern = aa2x;
+      break;
+    case 4:
+      pattern = aa4x;
+      break;
+    case 8:
+      pattern = aa9x;
+      break;
+    case 16:
+      pattern = aa16x;
+      break;
+  }
+  for(int k=0; k< pattern.length; k++){
+    float w0 = edgeFunction(a, b, x + pattern[k].x(), y + pattern[k].y());
+    float w1 = edgeFunction(b, c, x+pattern[k].x(), y+pattern[k].y());
+    float w2 = edgeFunction(c, a, x+pattern[k].x(), y+pattern[k].y());
+    if( w0 >= 0 && w1 >= 0 && w2 >= 0){
+       cnt++;
+    }
+  }
+  return cnt/samples;
+}
 float msaa(int samples, Vector a, Vector b, Vector c, float x, float y){
   float cnt = 0;
   Vector[] pattern = {};
