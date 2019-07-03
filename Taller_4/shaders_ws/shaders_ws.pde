@@ -1,4 +1,49 @@
-import g4p_controls.*;
+PImage label;
+PShape can;
+float angle;
+
+PShader bwShader;
+
+void setup() {
+  size(640, 360, P3D);
+  label = loadImage("media/lachoy.jpg");
+  can = createCan(100, 200, 32, label);
+  bwShader = loadShader("blackWhitefrag.glsl");
+}
+
+void draw() {
+  background(0);
+  
+  shader(bwShader);
+    
+  translate(width/2, height/2);
+  rotateY(angle);
+  shape(can);
+  angle += 0.01;
+
+    println("FPS: " + int(frameRate), 0, 0);
+}
+
+PShape createCan(float r, float h, int detail, PImage tex) {
+  textureMode(NORMAL);
+  PShape sh = createShape();
+  sh.beginShape(QUAD_STRIP);
+  sh.noStroke();
+  sh.texture(tex);
+  for (int i = 0; i <= detail; i++) {
+    float angle = TWO_PI / detail;
+    float x = sin(i * angle);
+    float z = cos(i * angle);
+    float u = float(i) / detail;
+    sh.normal(x, 0, z);
+    sh.vertex(x * r, -h/2, z * r, u, 0);
+    sh.vertex(x * r, +h/2, z * r, u, 1);
+  }
+  sh.endShape();
+  return sh;
+}
+
+/* import g4p_controls.*;
 import processing.video.*;
 
 // Class with static variables that emulate an Enum since it is not supported
@@ -41,12 +86,12 @@ void setup() {
   base = createGraphics(512, 300);
   modified = createGraphics(512, 300);
   
-  catImg = loadImage("cat.jpg");
-  baboonImg = loadImage("baboon.png");
-  lenaImg = loadImage("lena.png");
+  catImg = loadImage("media/cat.jpg");
+  baboonImg = loadImage("media/baboon.png");
+  lenaImg = loadImage("media/lena.png");
   
   img = catImg;
-  video = new Movie(this, "cat.mp4");
+  video = new Movie(this, "media/cat.mp4");
   video.loop();
   
   // Content Type Buttons
@@ -130,10 +175,10 @@ void draw() {
   if(gaussianBlurCheck.isSelected()){
     modified.pixels = applyConvolution(modified.pixels, gaussianBlurMatrix, 3, modified.width);
   }
-  if(contentType == ContentType.VIDEO){
+  //if(contentType == ContentType.VIDEO){
     textSize(25);
     text("FPS: " + int(frameRate), 950, 400);
-  }
+  //}
 
   modified.updatePixels();  
   modified.endDraw();
@@ -215,4 +260,4 @@ public void handleLenaButton(GButton button, GEvent event){
 
 public void handleVideoButton(GButton button, GEvent event){
   contentType = ContentType.VIDEO;
-}
+} */
