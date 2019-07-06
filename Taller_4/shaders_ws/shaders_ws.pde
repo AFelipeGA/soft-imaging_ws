@@ -1,4 +1,4 @@
-PImage label;
+/* PImage label;
 PShape can;
 float angle;
 
@@ -8,11 +8,12 @@ void setup() {
   size(640, 360, P3D);
   label = loadImage("media/lachoy.jpg");
   can = createCan(100, 200, 32, label);
-  bwShader = loadShader("blackWhitefrag.glsl");
+  //bwShader = loadShader("blackWhitefrag.glsl");
+  bwShader = loadShader("edgeDetection.glsl");
 }
 
 void draw() {
-  background(0);
+  background(255);
   
   shader(bwShader);
     
@@ -41,9 +42,9 @@ PShape createCan(float r, float h, int detail, PImage tex) {
   }
   sh.endShape();
   return sh;
-}
+} */
 
-/* import g4p_controls.*;
+import g4p_controls.*;
 import processing.video.*;
 
 // Class with static variables that emulate an Enum since it is not supported
@@ -56,9 +57,13 @@ PGraphics base, modified; // PGraphics
 PImage img, catImg, baboonImg, lenaImg; // Images
 Movie video; // Video
 
+PImage label;
+PShape can;
+PShader bwShader;
+
 GButton catButton, baboonButton, lenaButton, videoButton; // Buttons
 GCheckbox meanCheck, ccirCheck, btCheck, smpteCheck; // Grayscale Buttons
-GCheckbox edgeDetectionCheck, sharpenCheck, boxBlurCheck, gaussianBlurCheck; // Masks Buttons
+GCheckbox edgeDetectionCheck, sharpenCheck, boxBlurCheck, gaussianBlurCheck, shEdgeDetectionCheck; // Masks Buttons
 
 int contentType = ContentType.IMAGE;
 int modifierType = 1; // 1=GrayScale
@@ -82,7 +87,7 @@ float[][] gaussianBlurMatrix =   { { 1.0/16, 1.0/8, 1.0/16 } ,
                                    { 1.0/16, 1.0/8, 1.0/16 } } ;
 
 void setup() {
-  size(1152, 550);
+  size(1152, 550, P3D);
   base = createGraphics(512, 300);
   modified = createGraphics(512, 300);
   
@@ -93,7 +98,7 @@ void setup() {
   img = catImg;
   video = new Movie(this, "media/cat.mp4");
   video.loop();
-  
+
   // Content Type Buttons
   catButton = new GButton(this, 25, 425, 100, 30, "Cat");
   catButton.addEventHandler(this, "handleCatButton");
@@ -114,11 +119,20 @@ void setup() {
   edgeDetectionCheck = new GCheckbox(this, 775, 400, 125, 25, "Edge Detection");
   sharpenCheck = new GCheckbox(this, 775, 425, 125, 25, "Sharpen");
   boxBlurCheck = new GCheckbox(this, 775, 450, 125, 25, "Box Blur");
-  gaussianBlurCheck = new GCheckbox(this, 775, 475, 125, 25, "Gaussian Blur");  
+  gaussianBlurCheck = new GCheckbox(this, 775, 475, 125, 25, "Gaussian Blur");
+
+  //Checkboxes Shaders
+  shEdgeDetectionCheck = new GCheckbox(this, 950, 400, 125, 25, "Edge Detection Shader");
+
+  //Shader
+  can = createCan(100, 200, 32, catImg);
+  //bwShader = loadShader("blackWhitefrag.glsl");
+  bwShader = loadShader("edgeDetection.glsl");
 }
 
 void draw() {
   background(128);
+
   // Text
   textSize(32);
   text("Original", 25, 35);
@@ -177,13 +191,18 @@ void draw() {
   }
   //if(contentType == ContentType.VIDEO){
     textSize(25);
-    text("FPS: " + int(frameRate), 950, 400);
+    text("FPS: " + int(frameRate), 950, 490);
   //}
 
   modified.updatePixels();  
   modified.endDraw();
   
   image(modified, 612, 50);
+
+  can = createCan(200, 200, 32, modified);
+  //shader(bwShader);
+  translate(width/2, height/2);
+  shape(can);
 }
 
 color [] blackAndWhite(color[] pixelArray, float red, float green, float blue) {
@@ -246,7 +265,6 @@ public void handleCatButton(GButton button, GEvent event){
   img = catImg;
 }
 
-
 public void handleBaboonButton(GButton button, GEvent event){
   contentType = ContentType.IMAGE;
   img = baboonImg;
@@ -257,7 +275,25 @@ public void handleLenaButton(GButton button, GEvent event){
   img = lenaImg;
 }
 
-
 public void handleVideoButton(GButton button, GEvent event){
   contentType = ContentType.VIDEO;
-} */
+}
+
+PShape createCan(float r, float h, int detail, PImage tex) {
+  textureMode(NORMAL);
+  PShape sh = createShape();
+  sh.beginShape(QUAD_STRIP);
+  sh.noStroke();
+  sh.texture(tex);
+  for (int i = 0; i <= detail; i++) {
+    float angle = TWO_PI / detail;
+    float x = sin(i * angle);
+    float z = cos(i * angle);
+    float u = float(i) / detail;
+    sh.normal(x, 0, z);
+    sh.vertex(x * r, -h/2, z * r, u, 0);
+    sh.vertex(x * r, +h/2, z * r, u, 1);
+  }
+  sh.endShape();
+  return sh;
+}
