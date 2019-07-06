@@ -5,17 +5,12 @@ precision mediump int;
 
 uniform sampler2D texture;
 
-
-
 varying vec4 vertColor;
-varying vec3 ecNormal;
-varying vec3 lightDir;
 varying vec4 vertTexCoord;
 
 void main() {
-  vec3 direction = normalize(lightDir);
-  vec3 normal = normalize(ecNormal);
-  float intensity = max(0.0, dot(direction, normal));
-  vec4 tintColor = vec4(intensity, intensity, intensity, 1) * (1,0,0,1);
-  gl_FragColor = texture2D(texture, vertTexCoord.st) * tintColor;
+  /* int si = int(vertTexCoord.s * 50.0);
+  int sj = int(vertTexCoord.t * 50.0);
+  gl_FragColor = texture2D(texture, vec2(float(si) / 50.0, float(sj) / 50.0)) * vertColor; */
+  gl_FragColor = texture2D(texture, vertTexCoord.st) * vertColor;
 }
