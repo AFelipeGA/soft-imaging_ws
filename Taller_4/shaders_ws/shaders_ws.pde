@@ -1,55 +1,3 @@
-/* import g4p_controls.*;
-
-PImage label;
-PShape can;
-float angle;
-
-PShader bwShader;
-
-GCheckbox edgeDetectionCheck;
-
-void setup() {
-  size(640, 360, P3D);
-  edgeDetectionCheck = new GCheckbox(this, 20, 50, 125, 25, "Edge Detection");
-  
-  label = loadImage("media/lachoy.jpg");
-  can = createCan(100, 200, 32, label);
-  //bwShader = loadShader("blackWhitefrag.glsl");
-  bwShader = loadShader("edgeDetection.glsl");
-}
-
-void draw() {
-  background(255);
-  
-  can.filter(bwShader);
-    
-  translate(width/2, height/2);
-  rotateY(angle);
-  shape(can);
-  angle += 0.01;
-
-    println("FPS: " + int(frameRate), 0, 0);
-}
-
-PShape createCan(float r, float h, int detail, PImage tex) {
-  textureMode(NORMAL);
-  PShape sh = createShape();
-  sh.beginShape(QUAD_STRIP);
-  sh.noStroke();
-  sh.texture(tex);
-  for (int i = 0; i <= detail; i++) {
-    float angle = TWO_PI / detail;
-    float x = sin(i * angle);
-    float z = cos(i * angle);
-    float u = float(i) / detail;
-    sh.normal(x, 0, z);
-    sh.vertex(x * r, -h/2, z * r, u, 0);
-    sh.vertex(x * r, +h/2, z * r, u, 1);
-  }
-  sh.endShape();
-  return sh;
-} */
-
 import g4p_controls.*;
 import processing.video.*;
 
@@ -65,40 +13,41 @@ Movie video; // Video
 
 PImage label;
 PShape can;
-PShader bwShader;
-PShader eDShader;
+PShader eDShader, sharpenShader, bwShader, blurShader, blackWhiteShader;
 
 GButton catButton, baboonButton, lenaButton, videoButton; // Buttons
-GCheckbox meanCheck, ccirCheck, btCheck, smpteCheck; // Grayscale Buttons
-GCheckbox edgeDetectionCheck, sharpenCheck, boxBlurCheck, gaussianBlurCheck, shEdgeDetectionCheck; // Masks Buttons
+GCheckbox meanCheck; // Grayscale Buttons
+GCheckbox edgeDetectionCheck, sharpenCheck, boxBlurCheck; // Masks Buttons
+GCheckbox edgeDetectionSharpenCheck, sharpenShaderCheck, blurShaderCheck, blackWhiteShaderCheck;
 
 int contentType = ContentType.IMAGE;
 int modifierType = 1; // 1=GrayScale
 
 boolean isReadyShaderSetup = false;
 
-float[][] sharpenMatrix =  { { 0, -1.0, 0 } , 
-                             { -1.0, 5.0, -1.0 } ,
-                             { 0, -1.0, 0 } } ;
+float[][] sharpenMatrix =  { { 0, -1, 0 } , 
+                             { -1, 5, -1 } ,
+                             { 0, -1, 0 } } ;
 
-float[][] edgeDetectionMatrix =  { { 1, 0, -1 } , 
-                                   { 0, 0, 0 } ,
-                                   { -1, 0, 1 } } ;
+float[][] edgeDetectionMatrix =  { { -1, -1, -1 } , 
+                                   { -1, 8, -1 } ,
+                                   { -1, -1, -1 } } ;
                                    
 
 float[][] boxBlurMatrix =  { { 1.0/9, 1.0/9, 1.0/9 } , 
                              { 1.0/9, 1.0/9, 1.0/9 } ,
                              { 1.0/9, 1.0/9, 1.0/9 } } ;
                              
-float[][] gaussianBlurMatrix =   { { 1.0/16, 1.0/8, 1.0/16 } , 
-                                   { 1.0/8, 1.0/4, 1.0/8 } ,
-                                   { 1.0/16, 1.0/8, 1.0/16 } } ;
-
 void setup() {
-  size(1152, 550, P3D);
-  eDShader = loadShader("edgeDetection.glsl");
-  base = createGraphics(512, 300);
-  modified = createGraphics(512, 300, P2D);
+  size(1152, 600, P3D);
+
+  eDShader = loadShader("edgeDetectionfrag.glsl");
+  sharpenShader = loadShader("sharpenfrag.glsl");
+  blurShader = loadShader("blurfrag.glsl");
+  blackWhiteShader = loadShader("blackWhitefrag.glsl");
+
+  base = createGraphics(512, 300, P3D);
+  modified = createGraphics(512, 300, P3D);
   
   catImg = loadImage("media/cat.jpg");
   baboonImg = loadImage("media/baboon.png");
@@ -109,44 +58,42 @@ void setup() {
   video.loop();
 
   // Content Type Buttons
-  catButton = new GButton(this, 25, 425, 100, 30, "Cat");
+  catButton = new GButton(this, 25, 400, 100, 30, "Cat");
   catButton.addEventHandler(this, "handleCatButton");
-  baboonButton = new GButton(this, 150, 425, 100, 30, "Baboon");
+  baboonButton = new GButton(this, 25, 450, 100, 30, "Baboon");
   baboonButton.addEventHandler(this, "handleBaboonButton");
-  lenaButton = new GButton(this, 275, 425, 100, 30, "Lena");
+  lenaButton = new GButton(this, 25, 500, 100, 30, "Lena");
   lenaButton.addEventHandler(this, "handleLenaButton");
-  videoButton = new GButton(this, 25, 475, 100, 30, "Video");
+  videoButton = new GButton(this, 25, 550, 100, 30, "Video");
   videoButton.addEventHandler(this, "handleVideoButton");
   
   // Grayscale Method Buttons
-  meanCheck = new GCheckbox(this, 612, 400, 125, 25, "Mean");
-  ccirCheck = new GCheckbox(this, 612, 425, 125, 25, "CCIR 601");
-  btCheck = new GCheckbox(this, 612, 450, 125, 25, "BT. 709");
-  smpteCheck = new GCheckbox(this, 612, 475, 125, 25, "SMPTE 240M");
+  g4p_controls.G4P.setGlobalColorScheme	(255);
+  meanCheck = new GCheckbox(this, 150, 400, 125, 25, "Mean");
   
   // Convolution Buttons
-  edgeDetectionCheck = new GCheckbox(this, 775, 400, 125, 25, "Edge Detection");
-  sharpenCheck = new GCheckbox(this, 775, 425, 125, 25, "Sharpen");
-  boxBlurCheck = new GCheckbox(this, 775, 450, 125, 25, "Box Blur");
-  gaussianBlurCheck = new GCheckbox(this, 775, 475, 125, 25, "Gaussian Blur");
+  edgeDetectionCheck = new GCheckbox(this, 275, 400, 125, 25, "Edge Detection");
+  sharpenCheck = new GCheckbox(this, 275, 425, 125, 25, "Sharpen");
+  boxBlurCheck = new GCheckbox(this, 275, 450, 125, 25, "Box Blur");
 
   //Checkboxes Shaders
-  shEdgeDetectionCheck = new GCheckbox(this, 950, 400, 125, 25, "Edge Detection Shader");
+  blackWhiteShaderCheck = new GCheckbox(this, 400, 400, 125, 25, "Black White");
+  edgeDetectionSharpenCheck = new GCheckbox(this, 400, 425, 125, 25, "Edge Detection");
+  sharpenShaderCheck = new GCheckbox(this, 400, 450, 125, 25, "Sharpen");
+  blurShaderCheck = new GCheckbox(this, 400, 475, 125, 25, "Blur");
 }
 
 void draw() {
-  background(128);
+  background(0);
 
   // Text
-  textSize(32);
-  text("Original", 25, 35);
-  text("Modified", 612, 35);
   textSize(18);
-  text("Content Type", 25, 390);
-  text("Grayscale", 612, 390);
-  text("Masks", 775, 390);
+  fill(255);
+  text("Grayscale", 150, 380);
+  text("Masks", 275, 380);
+  text("Shaders", 400, 380);
   textSize(25);
-  text("FPS: " + int(frameRate), 950, 490);
+  text("FPS: " + int(frameRate), 400, 550);
 
   // Base Canvas
   base.beginDraw();
@@ -165,6 +112,23 @@ void draw() {
   base.endDraw();
   base.loadPixels();
   image(base, 25, 50);
+  
+  if(blackWhiteShaderCheck.isSelected()){
+    blackWhiteShader.set("texture", base);
+    filter(blackWhiteShader);
+  }
+  if(edgeDetectionSharpenCheck.isSelected()){
+    eDShader.set("texture", base);
+    filter(eDShader);
+  }
+  if(sharpenShaderCheck.isSelected()){
+    sharpenShader.set("texture", base);
+    filter(sharpenShader);
+  }
+  if(blurShaderCheck.isSelected()){
+    blurShader.set("texture", base);
+    filter(blurShader);
+  }
 
   // Modified Canvas
   modified.beginDraw();
@@ -173,15 +137,6 @@ void draw() {
   setPixels(base, modified);
   if(meanCheck.isSelected()){
     modified.pixels = blackAndWhite(modified.pixels, 1.0/3, 1.0/3, 1.0/3);
-  }
-  if(ccirCheck.isSelected()){
-    modified.pixels = blackAndWhite(modified.pixels, 0.2989, 0.5870, 0.1140);
-  }
-  if(btCheck.isSelected()){
-    modified.pixels = blackAndWhite(modified.pixels, 0.2126, 0.7152, 0.0722);
-  }
-  if(smpteCheck.isSelected()){
-    modified.pixels = blackAndWhite(modified.pixels, 0.212, 0.701, 0.087);
   }
   if(edgeDetectionCheck.isSelected()){
     modified.pixels = applyConvolution(modified.pixels, edgeDetectionMatrix, 3, modified.width);
@@ -192,19 +147,10 @@ void draw() {
   if(boxBlurCheck.isSelected()){
     modified.pixels = applyConvolution(modified.pixels, boxBlurMatrix, 3, modified.width);
   }
-  if(gaussianBlurCheck.isSelected()){
-    modified.pixels = applyConvolution(modified.pixels, gaussianBlurMatrix, 3, modified.width);
-  }
   modified.updatePixels();  
   modified.endDraw();
 
   image(modified, 612, 50);
-  
-  if(shEdgeDetectionCheck.isSelected()){
-    eDShader.set("texture", modified);
-    filter(eDShader);
-    //modified.shader(eDShader);
-  }
 }
 
 color [] blackAndWhite(color[] pixelArray, float red, float green, float blue) {
@@ -279,23 +225,4 @@ public void handleLenaButton(GButton button, GEvent event){
 
 public void handleVideoButton(GButton button, GEvent event){
   contentType = ContentType.VIDEO;
-}
-
-PShape createCan(float r, float h, int detail, PImage tex) {
-  textureMode(NORMAL);
-  PShape sh = createShape();
-  sh.beginShape(QUAD_STRIP);
-  sh.noStroke();
-  sh.texture(tex);
-  for (int i = 0; i <= detail; i++) {
-    float angle = TWO_PI / detail;
-    float x = sin(i * angle);
-    float z = cos(i * angle);
-    float u = float(i) / detail;
-    sh.normal(x, 0, z);
-    sh.vertex(x * r, -h/2, z * r, u, 0);
-    sh.vertex(x * r, +h/2, z * r, u, 1);
-  }
-  sh.endShape();
-  return sh;
 }
