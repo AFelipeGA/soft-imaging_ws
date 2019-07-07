@@ -4,7 +4,6 @@ uniform mat3 normalMatrix;
 uniform mat4 texMatrix;
 
 uniform vec4 lightPosition;
-uniform vec3 lightColor;
 
 attribute vec4 position;
 attribute vec4 color;

@@ -68,7 +68,7 @@ void draw() {
 }
 
 void drawScene() {  
-  //shader(texlightShader);
+  shader(texlightShader);
   drawLights();
 
   pushMatrix();
