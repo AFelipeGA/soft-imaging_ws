@@ -12,7 +12,15 @@ Estudiar los [patrones de diseño de shaders](http://visualcomputing.github.io/S
 
 ## Informe
 
-(elabore en este sección un informe del ejercicio realizado)
+### Benchmark
+
+### Modelo de iluminación
+
+### Bump mapping
+
+El modelo que se implementó permite integrar un modelo de iluminación con diferentes fuentes que recrean la escena de un carro en una calle con semáforos y luces en la calle.
+
+Este modelo permite trabajar el *bump mapping* con diferentes texturas a lo largo de la escena. Se centró en mostrar una textura clara en la carrocería del carro, donde se pudiera apreciar el detalle de las puertas, el parabrisas y los diferentes elementos exteriores del carro.
 
 ## Entrega
 
