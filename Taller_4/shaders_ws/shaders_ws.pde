@@ -7,7 +7,7 @@ class ContentType {
   static final int VIDEO = 2;
 }
 
-PGraphics base, modified; // PGraphics
+PGraphics base; // PGraphics
 PImage img, catImg, baboonImg, lenaImg; // Images
 Movie video; // Video
 
@@ -39,7 +39,7 @@ float[][] boxBlurMatrix =  { { 1.0/9, 1.0/9, 1.0/9 } ,
                              { 1.0/9, 1.0/9, 1.0/9 } } ;
                              
 void setup() {
-  size(1152, 600, P3D);
+  size(562, 600, P3D);
 
   eDShader = loadShader("edgeDetectionfrag.glsl");
   sharpenShader = loadShader("sharpenfrag.glsl");
@@ -47,7 +47,6 @@ void setup() {
   blackWhiteShader = loadShader("blackWhitefrag.glsl");
 
   base = createGraphics(512, 300, P3D);
-  modified = createGraphics(512, 300, P3D);
   
   catImg = loadImage("media/cat.jpg");
   baboonImg = loadImage("media/baboon.png");
@@ -67,14 +66,13 @@ void setup() {
   videoButton = new GButton(this, 25, 550, 100, 30, "Video");
   videoButton.addEventHandler(this, "handleVideoButton");
   
-  // Grayscale Method Buttons
   g4p_controls.G4P.setGlobalColorScheme	(255);
-  meanCheck = new GCheckbox(this, 150, 400, 125, 25, "Mean");
   
   // Convolution Buttons
-  edgeDetectionCheck = new GCheckbox(this, 275, 400, 125, 25, "Edge Detection");
-  sharpenCheck = new GCheckbox(this, 275, 425, 125, 25, "Sharpen");
-  boxBlurCheck = new GCheckbox(this, 275, 450, 125, 25, "Box Blur");
+  meanCheck = new GCheckbox(this, 250, 400, 125, 25, "Mean");
+  edgeDetectionCheck = new GCheckbox(this, 250, 425, 125, 25, "Edge Detection");
+  sharpenCheck = new GCheckbox(this, 250, 450, 125, 25, "Sharpen");
+  boxBlurCheck = new GCheckbox(this, 250, 475, 125, 25, "Box Blur");
 
   //Checkboxes Shaders
   blackWhiteShaderCheck = new GCheckbox(this, 400, 400, 125, 25, "Black White");
@@ -89,7 +87,6 @@ void draw() {
   // Text
   textSize(18);
   fill(255);
-  text("Grayscale", 150, 380);
   text("Masks", 275, 380);
   text("Shaders", 400, 380);
   textSize(25);
@@ -109,8 +106,23 @@ void draw() {
      default:
        break;
   }
-  base.endDraw();
   base.loadPixels();
+  if(meanCheck.isSelected()){
+    base.pixels = blackAndWhite(base.pixels, 1.0/3, 1.0/3, 1.0/3);
+  }
+  if(edgeDetectionCheck.isSelected()){
+    base.pixels = applyConvolution(base.pixels, edgeDetectionMatrix, 3, base.width);
+  }
+  if(sharpenCheck.isSelected()){
+    base.pixels = applyConvolution(base.pixels, sharpenMatrix, 3, base.width);
+  }
+  if(boxBlurCheck.isSelected()){
+    base.pixels = applyConvolution(base.pixels, boxBlurMatrix, 3, base.width);
+  }
+
+  base.updatePixels();
+  base.endDraw();
+
   image(base, 25, 50);
   
   if(blackWhiteShaderCheck.isSelected()){
@@ -129,28 +141,6 @@ void draw() {
     blurShader.set("texture", base);
     filter(blurShader);
   }
-
-  // Modified Canvas
-  modified.beginDraw();
-  modified.background(0);
-  modified.loadPixels();
-  setPixels(base, modified);
-  if(meanCheck.isSelected()){
-    modified.pixels = blackAndWhite(modified.pixels, 1.0/3, 1.0/3, 1.0/3);
-  }
-  if(edgeDetectionCheck.isSelected()){
-    modified.pixels = applyConvolution(modified.pixels, edgeDetectionMatrix, 3, modified.width);
-  }
-  if(sharpenCheck.isSelected()){
-    modified.pixels = applyConvolution(modified.pixels, sharpenMatrix, 3, modified.width);
-  }
-  if(boxBlurCheck.isSelected()){
-    modified.pixels = applyConvolution(modified.pixels, boxBlurMatrix, 3, modified.width);
-  }
-  modified.updatePixels();  
-  modified.endDraw();
-
-  image(modified, 612, 50);
 }
 
 color [] blackAndWhite(color[] pixelArray, float red, float green, float blue) {
