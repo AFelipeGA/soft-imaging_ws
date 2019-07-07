@@ -1,11 +1,17 @@
-/* PImage label;
+/* import g4p_controls.*;
+
+PImage label;
 PShape can;
 float angle;
 
 PShader bwShader;
 
+GCheckbox edgeDetectionCheck;
+
 void setup() {
   size(640, 360, P3D);
+  edgeDetectionCheck = new GCheckbox(this, 20, 50, 125, 25, "Edge Detection");
+  
   label = loadImage("media/lachoy.jpg");
   can = createCan(100, 200, 32, label);
   //bwShader = loadShader("blackWhitefrag.glsl");
@@ -15,7 +21,7 @@ void setup() {
 void draw() {
   background(255);
   
-  shader(bwShader);
+  can.filter(bwShader);
     
   translate(width/2, height/2);
   rotateY(angle);
@@ -60,6 +66,7 @@ Movie video; // Video
 PImage label;
 PShape can;
 PShader bwShader;
+PShader eDShader;
 
 GButton catButton, baboonButton, lenaButton, videoButton; // Buttons
 GCheckbox meanCheck, ccirCheck, btCheck, smpteCheck; // Grayscale Buttons
@@ -67,7 +74,8 @@ GCheckbox edgeDetectionCheck, sharpenCheck, boxBlurCheck, gaussianBlurCheck, shE
 
 int contentType = ContentType.IMAGE;
 int modifierType = 1; // 1=GrayScale
-int segmentatinRange = 20; // range of segmentation option
+
+boolean isReadyShaderSetup = false;
 
 float[][] sharpenMatrix =  { { 0, -1.0, 0 } , 
                              { -1.0, 5.0, -1.0 } ,
@@ -88,8 +96,9 @@ float[][] gaussianBlurMatrix =   { { 1.0/16, 1.0/8, 1.0/16 } ,
 
 void setup() {
   size(1152, 550, P3D);
+  eDShader = loadShader("edgeDetection.glsl");
   base = createGraphics(512, 300);
-  modified = createGraphics(512, 300);
+  modified = createGraphics(512, 300, P2D);
   
   catImg = loadImage("media/cat.jpg");
   baboonImg = loadImage("media/baboon.png");
@@ -123,11 +132,6 @@ void setup() {
 
   //Checkboxes Shaders
   shEdgeDetectionCheck = new GCheckbox(this, 950, 400, 125, 25, "Edge Detection Shader");
-
-  //Shader
-  can = createCan(100, 200, 32, catImg);
-  //bwShader = loadShader("blackWhitefrag.glsl");
-  bwShader = loadShader("edgeDetection.glsl");
 }
 
 void draw() {
@@ -141,6 +145,8 @@ void draw() {
   text("Content Type", 25, 390);
   text("Grayscale", 612, 390);
   text("Masks", 775, 390);
+  textSize(25);
+  text("FPS: " + int(frameRate), 950, 490);
 
   // Base Canvas
   base.beginDraw();
@@ -189,20 +195,16 @@ void draw() {
   if(gaussianBlurCheck.isSelected()){
     modified.pixels = applyConvolution(modified.pixels, gaussianBlurMatrix, 3, modified.width);
   }
-  //if(contentType == ContentType.VIDEO){
-    textSize(25);
-    text("FPS: " + int(frameRate), 950, 490);
-  //}
-
   modified.updatePixels();  
   modified.endDraw();
-  
-  image(modified, 612, 50);
 
-  can = createCan(200, 200, 32, modified);
-  //shader(bwShader);
-  translate(width/2, height/2);
-  shape(can);
+  image(modified, 612, 50);
+  
+  if(shEdgeDetectionCheck.isSelected()){
+    eDShader.set("texture", modified);
+    filter(eDShader);
+    //modified.shader(eDShader);
+  }
 }
 
 color [] blackAndWhite(color[] pixelArray, float red, float green, float blue) {
