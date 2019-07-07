@@ -22,6 +22,12 @@ El modelo que se implementó permite integrar un modelo de iluminación con dife
 
 Este modelo permite trabajar el *bump mapping* con diferentes texturas a lo largo de la escena. Se centró en mostrar una textura clara en la carrocería del carro, donde se pudiera apreciar el detalle de las puertas, el parabrisas y los diferentes elementos exteriores del carro.
 
+![image](https://user-images.githubusercontent.com/13041087/60772307-059c4780-a0ba-11e9-9fdc-336641c9c8a5.png)
+
+![image](https://user-images.githubusercontent.com/13041087/60772312-26649d00-a0ba-11e9-943b-5d292e86c9f4.png)
+
+![image](https://user-images.githubusercontent.com/13041087/60772322-48f6b600-a0ba-11e9-98b2-367d0c47dd54.png)
+
 ## Entrega
 
 Fecha límite ~~Lunes 1/7/19~~ Domingo 7/7/19 a las 24h. Sustentaciones: 10/7/19 y 11/7/19.
