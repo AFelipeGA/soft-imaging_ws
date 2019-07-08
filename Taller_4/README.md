@@ -20,6 +20,10 @@ Al correr la aplicación, se observa una imagen inicial que puede ser cambiada, 
 
 ### Modelo de iluminación
 
+Se presenta una escena de un carro en una calle con un par de lámparas de calle y un semáforo. Se hace uso de una luz ambiental tenue para simular la noche, point lights para las lámparas y spot lights para el resto de luces ya que son dirigidas y en forma de cono. Para el shader de iluminación se usó el modelo de Blinn-Phong para simulación de luz especular y difusa, y la ley de Lambert y el factor de caída de la luz para agregar atenuación dependiendo de la distancia.
+
+Se utilizó la libreria nub para la interacción con los objetos de la escena y la cámara. Con click izquierdo sobre un objeto se puede cambiar el estado de las luces correspondientes al objeto y arrastrando mientras se sostiene el click derecho se puede mover el objeto sobre el eje Z para observar el cambio en tiempo real de la iluminación. Además si se hace click con el botón central del ratón sobre el carro, este rotará 180° sobre el eje Y para visualizar el efecto de las luces delanteras y traseras del carro en el otro sentido.
+
 ### Bump mapping
 
 El modelo que se implementó permite integrar un modelo de iluminación con diferentes fuentes que recrean la escena de un carro en una calle con semáforos y luces en la calle.
