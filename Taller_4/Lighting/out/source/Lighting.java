@@ -1,7 +1,28 @@
-import nub.core.*;
-import nub.primitives.*;
-import nub.processing.*;
-import nub.core.constraint.*;
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import nub.core.*; 
+import nub.primitives.*; 
+import nub.processing.*; 
+import nub.core.constraint.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class Lighting extends PApplet {
+
+
+
+
+
 
 PGraphics main;
 
@@ -72,8 +93,8 @@ float[] lightSpot = new float[MAX_LIGHTS * 2];
 float[] currentLightSpecular = {64, 64, 64};
 float[] currentLightFalloff = {3, 0, 0};
 
-void setup() {
-  size(1080, 720, OPENGL);
+public void setup() {
+  
   lightingShader = loadShader("lightFrag.glsl", "lightVert.glsl");
 
   scene = new Scene(this);
@@ -87,7 +108,7 @@ void setup() {
 }
 
 
-void draw() {    
+public void draw() {    
   resetUniforms();
   ambientLight(0, 0, 0);
   addAmbientLight(32, 32, 32);
@@ -97,7 +118,7 @@ void draw() {
   addLightsToShader(lightingShader);
 }
 
-void setupModels() {
+public void setupModels() {
   car = new Node(scene, loadShape("Car/Car.obj"));
   car.setPosition(carPosition);
   car.setPickingThreshold(0);
@@ -122,7 +143,7 @@ void setupModels() {
   street.setPosition(sceneCenter);
 }
 
-void setupLights() {
+public void setupLights() {
   carLights = new Node(scene);
   carLights.setPosition(carPosition);
 
@@ -241,7 +262,7 @@ void setupLights() {
         setCurrentSpecular(128, 0, 0);
         stroke(255, 0, 0);
         sphere(5);
-        addSpotLight(255, 0, 0, position().x(), position().y(), position().z(), 0, 1, 1, PI/2, 0.5);
+        addSpotLight(255, 0, 0, position().x(), position().y(), position().z(), 0, 1, 1, PI/2, 0.5f);
       }
     }
   };
@@ -254,7 +275,7 @@ void setupLights() {
         setCurrentSpecular(128, 0, 0);
         stroke(255, 0, 0);
         sphere(5);
-        addSpotLight(255, 0, 0, position().x(), position().y(), position().z(), 0, 1, 1, PI/2, 0.5);
+        addSpotLight(255, 0, 0, position().x(), position().y(), position().z(), 0, 1, 1, PI/2, 0.5f);
       }
     }
   };
@@ -267,7 +288,7 @@ void setupLights() {
         setCurrentSpecular(128, 128, 0);
         stroke(255, 255, 0);
         sphere(5);
-        addSpotLight(255, 255, 0, position().x(), position().y(), position().z(), 0, 1, 1, PI/2, 0.5);
+        addSpotLight(255, 255, 0, position().x(), position().y(), position().z(), 0, 1, 1, PI/2, 0.5f);
       }
     }
   };
@@ -280,7 +301,7 @@ void setupLights() {
         setCurrentSpecular(128, 128, 0);
         stroke(255, 255, 0);
         sphere(5);
-        addSpotLight(255, 255, 0, position().x(), position().y(), position().z(), 0, 1, 1, PI/2, 0.5);
+        addSpotLight(255, 255, 0, position().x(), position().y(), position().z(), 0, 1, 1, PI/2, 0.5f);
       }
     }
   };
@@ -293,7 +314,7 @@ void setupLights() {
         setCurrentSpecular(0, 128, 0);
         stroke(0, 255, 0);
         sphere(5);
-        addSpotLight(0, 255, 0, position().x(), position().y(), position().z(), 0, 1, 1, PI/2, 0.5);
+        addSpotLight(0, 255, 0, position().x(), position().y(), position().z(), 0, 1, 1, PI/2, 0.5f);
       }
     }
   };
@@ -306,22 +327,22 @@ void setupLights() {
         setCurrentSpecular(0, 128, 0);
         stroke(0, 255, 0);
         sphere(5);
-        addSpotLight(0, 255, 0, position().x(), position().y(), position().z(), 0, 1, 1, PI/2, 0.5);
+        addSpotLight(0, 255, 0, position().x(), position().y(), position().z(), 0, 1, 1, PI/2, 0.5f);
       }
     }
   };
   sideGreenLight.setPosition(Vector.add(trafficLightPosition, new Vector(-100, +170, +50)));
 }
 
-void setupShaderUniforms() {
+public void setupShaderUniforms() {
 
 }
 
-void mouseMoved() {
+public void mouseMoved() {
   scene.cast();
 }
 
-void mouseClicked() {
+public void mouseClicked() {
   if(mouseButton == LEFT && scene.trackedNode() != null){
     if(scene.trackedNode().equals(car)){
       headLightsControl = headLightsControl == 2 ? 0 : headLightsControl + 1;
@@ -352,7 +373,7 @@ void mouseClicked() {
   }
 }
 
-void mouseDragged() {
+public void mouseDragged() {
   if (mouseButton == LEFT && scene.trackedNode() == null){
     scene.spin();
   }
@@ -366,11 +387,11 @@ void mouseDragged() {
   }
 }
 
-void mouseWheel(MouseEvent event) {
+public void mouseWheel(MouseEvent event) {
   scene.moveForward(event.getCount() * 20);
 }
 
-void addAmbientLight(float r, float g, float b){
+public void addAmbientLight(float r, float g, float b){
   lightPosition(lightCount, 0, 0, 0);
   lightNormal(lightCount, 0, 0, 0);
   lightAmbient(lightCount, r, g, b);
@@ -381,7 +402,7 @@ void addAmbientLight(float r, float g, float b){
   lightCount ++; 
 }
 
-void addPointLight(float r, float g, float b, float x, float y, float z){
+public void addPointLight(float r, float g, float b, float x, float y, float z){
   lightPosition(lightCount, x, y, z);
   lightNormal(lightCount, 0, 0, 0);
   lightAmbient(lightCount, 0, 0, 0);
@@ -392,7 +413,7 @@ void addPointLight(float r, float g, float b, float x, float y, float z){
   lightCount++;
 }
 
-void addSpotLight(float r, float g, float b, float x, float y, float z, float dx, float dy, float dz, float angle, float concentration){
+public void addSpotLight(float r, float g, float b, float x, float y, float z, float dx, float dy, float dz, float angle, float concentration){
   lightPosition(lightCount, x, y, z);
   lightNormal(lightCount, dx, dy, dz);  
   lightAmbient(lightCount, 0, 0, 0);
@@ -403,7 +424,7 @@ void addSpotLight(float r, float g, float b, float x, float y, float z, float dx
   lightCount++;
 }
 
-void addLightsToShader(PShader sh){
+public void addLightsToShader(PShader sh){
   sh.set("myLightCount", lightCount);
   sh.set("myLightPosition", lightPosition, 4);
   sh.set("myLightNormal", lightNormal, 3);
@@ -414,7 +435,7 @@ void addLightsToShader(PShader sh){
   sh.set("myLightSpot", lightSpot, 2);
 }
 
-void lightPosition(int num, float x, float y, float z) {
+public void lightPosition(int num, float x, float y, float z) {
   PGraphicsOpenGL pg = (PGraphicsOpenGL)g;
   lightPosition[4 * num + 0] =
   x*pg.modelview.m00 + y*pg.modelview.m01 + z*pg.modelview.m02 + pg.modelview.m03;
@@ -425,7 +446,7 @@ void lightPosition(int num, float x, float y, float z) {
   lightPosition[4 * num + 3] = 1;
 }
 
-void lightNormal(int num, float dx, float dy, float dz) {
+public void lightNormal(int num, float dx, float dy, float dz) {
   PGraphicsOpenGL pg = (PGraphicsOpenGL)g;
   float nx =
       dx*pg.modelviewInv.m00 + dy*pg.modelviewInv.m10 + dz*pg.modelviewInv.m20;
@@ -447,41 +468,41 @@ void lightNormal(int num, float dx, float dy, float dz) {
 }
 }
 
-void lightAmbient(int num, float r, float g, float b) {
+public void lightAmbient(int num, float r, float g, float b) {
   lightAmbient[3 * num + 0] = normalizeColor(r);
   lightAmbient[3 * num + 1] = normalizeColor(g);
   lightAmbient[3 * num + 2] = normalizeColor(b);
 }
 
-void lightDiffuse(int num, float r, float g, float b) {
+public void lightDiffuse(int num, float r, float g, float b) {
   lightDiffuse[3 * num + 0] = normalizeColor(r);
   lightDiffuse[3 * num + 1] = normalizeColor(g);
   lightDiffuse[3 * num + 2] = normalizeColor(b);
 }
 
-void lightSpecular(int num, float r, float g, float b) {
+public void lightSpecular(int num, float r, float g, float b) {
   lightSpecular[3 * num + 0] = normalizeColor(r);
   lightSpecular[3 * num + 1] = normalizeColor(g);
   lightSpecular[3 * num + 2] = normalizeColor(b);
 }
 
-void lightFalloff(int num, float c0, float c1, float c2) {
+public void lightFalloff(int num, float c0, float c1, float c2) {
   lightFalloff[3* num + 0] = c0;
   lightFalloff[3* num + 1] = c1;
   lightFalloff[3* num + 2] = c2;
 }
 
-void lightSpot(int num, float angle, float exponent) {
+public void lightSpot(int num, float angle, float exponent) {
   lightSpot[2 * num + 0] = Math.max(0, cos(angle));
   lightSpot[2 * num + 1] = exponent;
 }
 
-void noLightSpot(int num) {
+public void noLightSpot(int num) {
   lightSpot[2 * num + 0] = 0;
   lightSpot[2 * num + 1] = 0;
 }
 
-void resetUniforms() {
+public void resetUniforms() {
   lightCount = 0;
   lightPosition = new float[MAX_LIGHTS * 4];
   lightNormal = new float[MAX_LIGHTS * 3];
@@ -492,18 +513,28 @@ void resetUniforms() {
   lightSpot = new float[MAX_LIGHTS * 2];
 }
 
-float normalizeColor(float c) {
+public float normalizeColor(float c) {
   return norm(c, 0, 255);
 }
 
-void setCurrentSpecular(float r, float g, float b) {
+public void setCurrentSpecular(float r, float g, float b) {
   currentLightSpecular[0] = r;
   currentLightSpecular[1] = g;
   currentLightSpecular[2] = b;
 }
 
-void setCurrentFalloff(float c0, float c1, float c2) {
+public void setCurrentFalloff(float c0, float c1, float c2) {
   currentLightFalloff[0] = c0;
   currentLightFalloff[1] = c1;
   currentLightFalloff[2] = c2;
+}
+  public void settings() {  size(1080, 720, OPENGL); }
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "Lighting" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
 }
