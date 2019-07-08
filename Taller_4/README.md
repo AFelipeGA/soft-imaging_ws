@@ -14,6 +14,10 @@ Estudiar los [patrones de diseño de shaders](http://visualcomputing.github.io/S
 
 ### Benchmark
 
+Para el desarrollo de este punto, se tomaron elementos del taller 1 donde se aplicaban algunas máscaras de convolución a imágenes y un video. Así pues, en este taller se se escogieron las máscaras: _Sharpen_, _Edge Detection_ y _Blur_, además de un filtro en escala de grises, por implentación de software (matrices del kernel) y por medio de shaders. 
+
+Al correr la aplicación, se observa una imagen inicial que puede ser cambiada, por medio de cuatro botones, a otras imágenes o a un video. Por otro lado, hay 8 checkbox (4 para la implementación por software y 4 para la implementación por shaders) para elegir la máscara de convolución. Una vez escogida la opción, se verá la máscara aplicada en la imagen o video y los FPS que muestra la diferencia de rendimiento en cada implementación..
+
 ### Modelo de iluminación
 
 ### Bump mapping
