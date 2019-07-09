@@ -66,12 +66,7 @@ vec3 normalFromTexture(sampler2D tex){
   return normal;
 }
 
-vec3 calcNormal(){
-  vec3 tangent = cross(ecNormal, vec3(0,1,0));
-  vec3 biTangent = cross(tangent, ecNormal);
-  mat3 tbn = mat3(tangent, biTangent, ecNormal);
-  return vec3(tbn * normalFromTexture(normalTexture));
-}
+
 
 void main() {
   // Light calculations
@@ -83,7 +78,7 @@ void main() {
   vec3 totalBackDiffuse = vec3(0, 0, 0);
   vec3 totalBackSpecular = vec3(0, 0, 0);
 
-  vec3 normal = calcNormal();
+  vec3 normal = normalFromTexture(normalTexture);
   vec3 normalInv = normal * -one_float;
   
   for (int i = 0; i < MAX_LIGHTS; i++) {

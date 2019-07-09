@@ -58,6 +58,7 @@ float[] currentLightSpecular = {128, 128, 128};
 float[] currentLightFalloff = {2, 0, 0};
 
 public void setup() {
+  shapeMode(CENTER);
   
   lightingShader = loadShader("lightFrag.glsl", "lightVert.glsl");
 
@@ -109,7 +110,6 @@ public void setupModels(){
       } else{
         modelShape = pg.createShape(BOX, 50);
       }
-      
       modelShape.setTexture(baseTexArray[selectedTexture]);
       if(bumpMapping){
         lightingShader.set("normalTexture", normalTexArray[selectedTexture]);
@@ -126,7 +126,6 @@ public void setupLights(){
   light = new Node(scene){
     @Override
     public void graphics(PGraphics pg){
-      shapeMode(CENTER);
       stroke(255,255,255);
       pg.sphere(10)   ;
       addPointLight(255,255,255, position().x(), position().y(), position().y());
