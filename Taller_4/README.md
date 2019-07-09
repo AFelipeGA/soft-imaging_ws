@@ -22,19 +22,33 @@ Al correr la aplicación, se observa una imagen inicial que puede ser cambiada, 
 
 Se presenta una escena de un carro en una calle con un par de lámparas de calle y un semáforo. Se hace uso de una luz ambiental tenue para simular la noche, point lights para las lámparas y spot lights para el resto de luces ya que son dirigidas y en forma de cono. Para el shader de iluminación se usó el modelo de Blinn-Phong para simulación de luz especular y difusa, y la ley de Lambert y el factor de caída de la luz para agregar atenuación dependiendo de la distancia.
 
+![image](./docs/images/blinn.png)
+
 Se utilizó la libreria nub para la interacción con los objetos de la escena y la cámara. Con click izquierdo sobre un objeto se puede cambiar el estado de las luces correspondientes al objeto y arrastrando mientras se sostiene el click derecho se puede mover el objeto sobre el eje Z para observar el cambio en tiempo real de la iluminación. Además si se hace click con el botón central del ratón sobre el carro, este rotará 180° sobre el eje Y para visualizar el efecto de las luces delanteras y traseras del carro en el otro sentido.
+
+![image](./docs/images/lighting.PNG)
 
 ### Bump mapping
 
-El modelo que se implementó permite integrar un modelo de iluminación con diferentes fuentes que recrean la escena de un carro en una calle con semáforos y luces en la calle.
+Se usa como base el shader de iluminación del punto anterior y se agrega Bump Mapping mediante las normales comprimidas como textura. Se usan distintos tipos de materiales con distintas texturas para poder visualizar el efecto en distintos casos. Es posible cambiar de textura usando las flechas arriba y abajo, cambiar de una esfera a una caja con la tecla 'S' y desactivar el Bump Mapping con la tecla 'B'. 
 
-Este modelo permite trabajar el *bump mapping* con diferentes texturas a lo largo de la escena. Se centró en mostrar una textura clara en la carrocería del carro, donde se pudiera apreciar el detalle de las puertas, el parabrisas y los diferentes elementos exteriores del carro.
+Se usó nub y la escena cuenta con una luz Point Light, además del modelo, que puede ser movida con el mouse.
 
-![image](https://user-images.githubusercontent.com/13041087/60772307-059c4780-a0ba-11e9-9fdc-336641c9c8a5.png)
+#### Metal con Bump Mapping
 
-![image](https://user-images.githubusercontent.com/13041087/60772312-26649d00-a0ba-11e9-943b-5d292e86c9f4.png)
+![Metal con Bump Mapping](./docs/images/bump_1.PNG)
 
-![image](https://user-images.githubusercontent.com/13041087/60772322-48f6b600-a0ba-11e9-98b2-367d0c47dd54.png)
+#### Metal sin Bump Mapping
+
+![Metal sin Bump Mapping](./docs/images/no_bump_1.PNG)
+
+#### Roca con Bump Mapping
+
+![Roca con Bump Mapping](./docs/images/bump_2.PNG)
+
+#### Roca sin Bump Mapping
+
+![Roca sin Bump Mapping](./docs/images/no_bump_2.PNG)
 
 ## Entrega
 
